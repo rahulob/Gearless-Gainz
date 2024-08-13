@@ -11,13 +11,17 @@ import SwiftData
 struct LogTab: View {
     @State var selectedDate: Date = Date.now
     @Query var todayWorkouts: [Workout]
+//    @State private var path = NavigationPath()
+    
     var body: some View {
         NavigationStack{
-            if todayWorkouts.count==0{
-                EmptyWorkoutView(selectedDate: $selectedDate)
-            }
-            ForEach(todayWorkouts){workout in
-                WorkoutView(workout: workout)
+            Group{
+                if todayWorkouts.count == 0 {
+                    EmptyWorkoutView(selectedDate: $selectedDate)
+                }
+                ForEach(todayWorkouts){workout in
+                    WorkoutView(workout: workout)
+                }
             }
             .navigationTitle("Start Workout")
         }
@@ -83,6 +87,7 @@ struct EmptyWorkoutView: View {
         modelContext.insert(workout)
     }
 }
+
 #Preview {
     LogTab()
         .modelContainer(for: Workout.self, inMemory: true)

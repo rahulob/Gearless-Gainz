@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MainApp: App {
@@ -13,5 +14,6 @@ struct MainApp: App {
         WindowGroup {
             Tabs()
         }
+        .modelContainer(for: Workout.self, inMemory: true)
     }
 }
