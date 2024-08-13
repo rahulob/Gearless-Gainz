@@ -8,10 +8,10 @@
 import SwiftUI
 
 @main
-struct Gearless_GainzApp: App {
+struct MainApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Tabs()
         }
     }
 }

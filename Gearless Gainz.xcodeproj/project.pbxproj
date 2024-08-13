@@ -7,18 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D5E641232C6B6AB0008397A4 /* Gearless_GainzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641222C6B6AB0008397A4 /* Gearless_GainzApp.swift */; };
-		D5E641252C6B6AB0008397A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641242C6B6AB0008397A4 /* ContentView.swift */; };
+		D5E641232C6B6AB0008397A4 /* MainApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641222C6B6AB0008397A4 /* MainApp.swift */; };
+		D5E641252C6B6AB0008397A4 /* Tabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641242C6B6AB0008397A4 /* Tabs.swift */; };
 		D5E641272C6B6AB2008397A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5E641262C6B6AB2008397A4 /* Assets.xcassets */; };
 		D5E6412A2C6B6AB2008397A4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5E641292C6B6AB2008397A4 /* Preview Assets.xcassets */; };
+		D5E641312C6B6B3D008397A4 /* LogTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641302C6B6B3D008397A4 /* LogTab.swift */; };
+		D5E641342C6B6C19008397A4 /* CalendarTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641332C6B6C19008397A4 /* CalendarTab.swift */; };
+		D5E641362C6B6CB3008397A4 /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641352C6B6CB3008397A4 /* WorkoutView.swift */; };
+		D5E641392C6B6FA9008397A4 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641382C6B6FA9008397A4 /* Workout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D5E6411F2C6B6AB0008397A4 /* Gearless Gainz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gearless Gainz.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D5E641222C6B6AB0008397A4 /* Gearless_GainzApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gearless_GainzApp.swift; sourceTree = "<group>"; };
-		D5E641242C6B6AB0008397A4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		D5E641222C6B6AB0008397A4 /* MainApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainApp.swift; sourceTree = "<group>"; };
+		D5E641242C6B6AB0008397A4 /* Tabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabs.swift; sourceTree = "<group>"; };
 		D5E641262C6B6AB2008397A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D5E641292C6B6AB2008397A4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		D5E641302C6B6B3D008397A4 /* LogTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogTab.swift; sourceTree = "<group>"; };
+		D5E641332C6B6C19008397A4 /* CalendarTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTab.swift; sourceTree = "<group>"; };
+		D5E641352C6B6CB3008397A4 /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
+		D5E641382C6B6FA9008397A4 /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,8 +59,10 @@
 		D5E641212C6B6AB0008397A4 /* Gearless Gainz */ = {
 			isa = PBXGroup;
 			children = (
-				D5E641222C6B6AB0008397A4 /* Gearless_GainzApp.swift */,
-				D5E641242C6B6AB0008397A4 /* ContentView.swift */,
+				D5E641222C6B6AB0008397A4 /* MainApp.swift */,
+				D5E641322C6B6B5F008397A4 /* Tabs */,
+				D5E641352C6B6CB3008397A4 /* WorkoutView.swift */,
+				D5E641372C6B6F79008397A4 /* DataModel */,
 				D5E641262C6B6AB2008397A4 /* Assets.xcassets */,
 				D5E641282C6B6AB2008397A4 /* Preview Content */,
 			);
@@ -65,6 +75,24 @@
 				D5E641292C6B6AB2008397A4 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		D5E641322C6B6B5F008397A4 /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				D5E641242C6B6AB0008397A4 /* Tabs.swift */,
+				D5E641302C6B6B3D008397A4 /* LogTab.swift */,
+				D5E641332C6B6C19008397A4 /* CalendarTab.swift */,
+			);
+			path = Tabs;
+			sourceTree = "<group>";
+		};
+		D5E641372C6B6F79008397A4 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+				D5E641382C6B6FA9008397A4 /* Workout.swift */,
+			);
+			path = DataModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,8 +165,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D5E641252C6B6AB0008397A4 /* ContentView.swift in Sources */,
-				D5E641232C6B6AB0008397A4 /* Gearless_GainzApp.swift in Sources */,
+				D5E641252C6B6AB0008397A4 /* Tabs.swift in Sources */,
+				D5E641342C6B6C19008397A4 /* CalendarTab.swift in Sources */,
+				D5E641232C6B6AB0008397A4 /* MainApp.swift in Sources */,
+				D5E641312C6B6B3D008397A4 /* LogTab.swift in Sources */,
+				D5E641362C6B6CB3008397A4 /* WorkoutView.swift in Sources */,
+				D5E641392C6B6FA9008397A4 /* Workout.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,8 +309,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -305,8 +337,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
