@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-// enum for the target muscles of the excercises
+// enum for the target muscles of the exercises
 enum TargetMuscle: String, Codable, CaseIterable {
     case back
     case chest
@@ -44,7 +44,7 @@ final class Workout: Identifiable{
     }
 }
 
-// This will be the excercise data inside each workout
+// This will be the exercise data inside each workout
 @Model
 final class WorkoutExercise: Identifiable {
     var id: UUID
@@ -60,7 +60,7 @@ final class WorkoutExercise: Identifiable {
 
 // TODO: delete the entry of the exercises if you delete the exercise
 @Model
-final class Exercise: Hashable, Identifiable{
+final class Exercise: Identifiable{
     var id: UUID
     @Attribute(.unique) var name: String
     var note: String
@@ -90,11 +90,3 @@ final class ExerciseSet: Identifiable{
         self.isWarmup = isWarmup
     }
 }
-
-
-let preloadExercises = [
-    Exercise(name: "Bench Press", targetMuscle: .chest, note: "Lie on a flat bench and press the barbell upwards."),
-    Exercise(name: "Squat", targetMuscle: .legs, note: "Lower your body as if you're sitting back into a chair."),
-    Exercise(name: "Deadlift", targetMuscle: .back, note: "Lift the barbell from the ground to hip level."),
-    // Add more exercises as needed
-]

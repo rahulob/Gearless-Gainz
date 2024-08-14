@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D50378542C6C964E00D83CCB /* DefaultExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50378532C6C964E00D83CCB /* DefaultExercises.swift */; };
 		D5E641232C6B6AB0008397A4 /* MainApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641222C6B6AB0008397A4 /* MainApp.swift */; };
 		D5E641252C6B6AB0008397A4 /* Tabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641242C6B6AB0008397A4 /* Tabs.swift */; };
 		D5E641272C6B6AB2008397A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5E641262C6B6AB2008397A4 /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D50378532C6C964E00D83CCB /* DefaultExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExercises.swift; sourceTree = "<group>"; };
 		D5E6411F2C6B6AB0008397A4 /* Gearless Gainz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gearless Gainz.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5E641222C6B6AB0008397A4 /* MainApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainApp.swift; sourceTree = "<group>"; };
 		D5E641242C6B6AB0008397A4 /* Tabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabs.swift; sourceTree = "<group>"; };
@@ -44,6 +46,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D54466682C6C7AFE00468800 /* WorkoutView */ = {
+			isa = PBXGroup;
+			children = (
+				D5E641352C6B6CB3008397A4 /* WorkoutView.swift */,
+				D5E6413A2C6B7D0D008397A4 /* ExercisePickerView.swift */,
+				D5E6413C2C6B7DCB008397A4 /* EditExerciseView.swift */,
+			);
+			path = WorkoutView;
+			sourceTree = "<group>";
+		};
 		D5E641162C6B6AB0008397A4 = {
 			isa = PBXGroup;
 			children = (
@@ -63,11 +75,9 @@
 		D5E641212C6B6AB0008397A4 /* Gearless Gainz */ = {
 			isa = PBXGroup;
 			children = (
-				D5E6413A2C6B7D0D008397A4 /* ExercisePickerView.swift */,
 				D5E641222C6B6AB0008397A4 /* MainApp.swift */,
-				D5E6413C2C6B7DCB008397A4 /* EditExerciseView.swift */,
+				D5E6413E2C6B8F2D008397A4 /* Views */,
 				D5E641322C6B6B5F008397A4 /* Tabs */,
-				D5E641352C6B6CB3008397A4 /* WorkoutView.swift */,
 				D5E641372C6B6F79008397A4 /* DataModel */,
 				D5E641262C6B6AB2008397A4 /* Assets.xcassets */,
 				D5E641282C6B6AB2008397A4 /* Preview Content */,
@@ -97,8 +107,17 @@
 			isa = PBXGroup;
 			children = (
 				D5E641382C6B6FA9008397A4 /* Workout.swift */,
+				D50378532C6C964E00D83CCB /* DefaultExercises.swift */,
 			);
 			path = DataModel;
+			sourceTree = "<group>";
+		};
+		D5E6413E2C6B8F2D008397A4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D54466682C6C7AFE00468800 /* WorkoutView */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -174,6 +193,7 @@
 				D5E641252C6B6AB0008397A4 /* Tabs.swift in Sources */,
 				D5E641342C6B6C19008397A4 /* CalendarTab.swift in Sources */,
 				D5E641232C6B6AB0008397A4 /* MainApp.swift in Sources */,
+				D50378542C6C964E00D83CCB /* DefaultExercises.swift in Sources */,
 				D5E641312C6B6B3D008397A4 /* LogTab.swift in Sources */,
 				D5E6413B2C6B7D0D008397A4 /* ExercisePickerView.swift in Sources */,
 				D5E641362C6B6CB3008397A4 /* WorkoutView.swift in Sources */,

@@ -11,14 +11,22 @@ import SwiftData
 struct WorkoutView: View {
     @Bindable var workout: Workout
     @Environment(\.modelContext) var context
-//    @Binding var path: NavigationPath
     
     var body: some View {
-        NavigationStack(){
-            NavigationLink{
-                ExercisePickerView(workout: workout)
-            } label: {
-                Label("Add Exercise", systemImage: "plus")
+        NavigationStack{
+            VStack{
+                NavigationLink{
+                    ExercisePickerView(workout: workout)
+                } label: {
+                    Label("Add Exercise", systemImage: "plus")
+                }
+                
+                ForEach(workout.exercises){ entry in
+                    GroupBox(entry.exercise.name){
+                        
+                    }
+                }
+                .padding()
             }
             .toolbar{
                 ToolbarItem{
@@ -31,9 +39,6 @@ struct WorkoutView: View {
                     }
                 }
             }
-//            .navigationDestination(for: Workout.self){ workout in
-//                ExercisePickerView(workout: workout)
-//            }
         }
     }
 }

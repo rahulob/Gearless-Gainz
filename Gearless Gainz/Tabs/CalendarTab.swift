@@ -10,7 +10,7 @@ import SwiftData
 
 struct CalendarTab: View {
     @Query private var workouts: [Workout]
-    @State private var workoutCounts: [Date: Int] = [:]
+//    @State private var workoutCounts: [Date: Int] = [:]
     @State private var selectedDate: Date = Date()
     
     let boxSize: CGFloat = 40
@@ -90,12 +90,10 @@ struct CalendarTab: View {
     }
     
     private func colorForDate(_ date: Date) -> Color {
-        let count = workoutCounts[date] ?? 0
-        switch count {
-        case 0: return .gray.opacity(0.2)
-        case 1: return .blue.opacity(0.3)
-        default: return .blue
+        if calendar.isDate(date, equalTo: .now, toGranularity: .day) {
+            return .accentColor.opacity(0.4)
         }
+        return .gray.opacity(0.2)
     }
 }
 
