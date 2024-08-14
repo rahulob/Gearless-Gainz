@@ -10,7 +10,7 @@ import SwiftData
 
 struct ExercisePickerView: View {
     @Query private var exercises: [Exercise]
-    @State private var selections = Set<Exercise>()
+    @State private var selections = [Exercise]()
     
     @State private var showSheet = false
     @State private var isNewExercise = false
@@ -27,9 +27,10 @@ struct ExercisePickerView: View {
                     CheckBoxImage(checked: selections.contains(exercise))
                         .onTapGesture {
                             if selections.contains(exercise){
-                                selections.remove(exercise)
+                                let index = selections.firstIndex(of: exercise)
+                                selections.remove(at: index!)
                             } else {
-                                selections.insert(exercise)
+                                selections.append(exercise)
                             }
                         }
                     
@@ -70,9 +71,9 @@ struct ExercisePickerView: View {
                 }
                 ToolbarItem{
                     Button("Add"){
-                        for ex in selections {
-                            workout.exercises.insert(WorkoutExercise(exercise: ex), at: 0)
-                            try! modelContext.save()
+                        let count = workout.exercises.count
+                        for (index, exercise) in selections.enumerated() {
+                            workout.exercises.append(WorkoutExercise(exercise: exercise, order: count+index))
                         }
                         dismiss()
                     }

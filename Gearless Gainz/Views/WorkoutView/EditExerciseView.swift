@@ -17,7 +17,7 @@ struct EditExerciseView: View {
     var body: some View {
         // Form to create or edit the exercise
         NavigationStack{
-            Form {
+            List {
                 // TODO: Add an image for the exercise as well
                 
                 // Name of the exercise
