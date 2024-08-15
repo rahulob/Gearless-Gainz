@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ExercisePickerView: View {
-    @Query private var exercises: [Exercise]
+    @Query(sort: \Exercise.name) private var exercises: [Exercise]
     @State private var selections = [Exercise]()
     
     @State private var showSheet = false
@@ -81,7 +81,10 @@ struct ExercisePickerView: View {
                 }
             }
             .sheet(isPresented: $showSheet, content: {
-                EditExerciseView(exercise: $ex, isNewExercise: $isNewExercise)
+                EditExerciseView(exercise: $ex, isNewExercise: isNewExercise)
+            })
+            .onAppear(perform: {
+                loadDefaultExercises()
             })
         }
     }

@@ -7,18 +7,34 @@
 
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct EditExerciseView: View {
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Binding var exercise: Exercise
-    @Binding var isNewExercise: Bool
+    let isNewExercise: Bool
+    @State private var selectedPhoto: PhotosPickerItem?
+    @State private var deleteAlert = false
 
     var body: some View {
         // Form to create or edit the exercise
         NavigationStack{
             List {
-                // TODO: Add an image for the exercise as well
+                // Photo of the exercise
+                Section("Add Image"){
+                    if let imageData = exercise.photo, let uiImage = UIImage(data: imageData){
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                    PhotosPicker(selection: $selectedPhoto, matching: .images) {
+                        let label = exercise.photo != nil ? "Change the Photo" : "Select a Photo"
+                        Label(label, systemImage: "photo")
+                            .frame(maxWidth: .infinity)
+                    }
+                }
                 
                 // Name of the exercise
                 Section("Exercise Name"){
@@ -51,16 +67,35 @@ struct EditExerciseView: View {
                 }
                 
                 // Save exercise button
-                if isNewExercise {
-                    Section{
+                Section{
+                    if isNewExercise {
                         Button{
                             dismiss()
                             modelContext.insert(exercise)
                         } label: {
                             Text("Save Exercise")
-                                .multilineTextAlignment(.center)
                         }
                         .frame(maxWidth: .infinity)
+                    }
+                    else {
+                        Button{
+                            deleteAlert.toggle()
+                        } label: {
+                            Label("Delete Exercise", systemImage: "trash")
+                                .foregroundStyle(Color.red)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .alert(isPresented: $deleteAlert){
+                            Alert(
+                                title: Text("Are you sure?"),
+                                message: Text("\"\(exercise.name)\" \n will be deleted from everywhere"),
+                                primaryButton: .destructive(Text("Delete"),action: {
+                                    dismiss()
+                                    modelContext.delete(exercise)
+                                }),
+                                secondaryButton: .cancel()
+                            )
+                        }
                     }
                 }
             }
@@ -72,18 +107,24 @@ struct EditExerciseView: View {
                     })
                 }
             }
+            .onChange(of: selectedPhoto, loadPhoto)
+        }
+    }
+    func loadPhoto() {
+        Task { @MainActor in
+            exercise.photo = try await selectedPhoto?.loadTransferable(type: Data.self)
         }
     }
 }
 
-struct EditExerciseViewWithPreview: View {
+private struct EditExerciseViewWithPreview: View {
     @State private var sampleExercise2 = Exercise(name: "", targetMuscle: .chest)
     @State private var isNewExercise = true
     
 //    @State private var path = NavigationPath()
 
     var body: some View {
-        EditExerciseView(exercise: $sampleExercise2, isNewExercise: $isNewExercise)
+        EditExerciseView(exercise: $sampleExercise2, isNewExercise: isNewExercise)
     }
 }
 

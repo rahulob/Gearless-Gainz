@@ -23,7 +23,7 @@ struct LogTab: View {
                     WorkoutView(workout: workout)
                 }
             }
-            .navigationTitle("Start Workout")
+            .navigationTitle("Log Workout")
         }
     }
 }

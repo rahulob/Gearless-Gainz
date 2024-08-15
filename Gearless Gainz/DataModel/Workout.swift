@@ -68,6 +68,7 @@ final class Exercise: Identifiable{
     var note: String
     var targetMuscle: TargetMuscle
     var youtubeURL: URL?
+    @Attribute(.externalStorage) var photo: Data?
     
     init(id: UUID = UUID(), name: String, targetMuscle: TargetMuscle, note: String = "", youtubeURL: URL? = nil) {
         self.id = id

@@ -77,7 +77,6 @@
 			children = (
 				D5E641222C6B6AB0008397A4 /* MainApp.swift */,
 				D5E6413E2C6B8F2D008397A4 /* Views */,
-				D5E641322C6B6B5F008397A4 /* Tabs */,
 				D5E641372C6B6F79008397A4 /* DataModel */,
 				D5E641262C6B6AB2008397A4 /* Assets.xcassets */,
 				D5E641282C6B6AB2008397A4 /* Preview Content */,
@@ -115,6 +114,7 @@
 		D5E6413E2C6B8F2D008397A4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D5E641322C6B6B5F008397A4 /* Tabs */,
 				D54466682C6C7AFE00468800 /* WorkoutView */,
 			);
 			path = Views;
