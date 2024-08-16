@@ -11,9 +11,8 @@ import SwiftData
 struct WorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var workout: Workout
-    @State private var showInfoSheet: Bool = false
-    @State private var showDeleteAlert: Bool = false
-    @State private var infoExercise = Exercise(name: "", targetMuscle: .chest)
+    @State private var dragItem: String?
+    @State private var sortedExercises: [WorkoutExercise] = []
     
     var body: some View {
         NavigationStack{
@@ -29,51 +28,32 @@ struct WorkoutView: View {
                         .padding(8)
                 }
                 .buttonStyle(.borderedProminent)
+                .padding()
                 
-                if workout.exercises.isEmpty{
-                    EmptyExercisesView()
-                }
-                else {
-                    // Scroll View to view all the exercises in the workout
-                    ScrollView{
-                        ForEach(workout.exercises.sorted(by: { $0.order < $1.order })){entry in
-                            GroupBox(content: {
-                                Text("\(entry.order+1)")
-                            }, label: {
-                                HStack(spacing: 16){
-                                    // Exercise name
-                                    Text(entry.exercise.name)
-                                        .lineLimit(2)
-                                    Spacer()
-                                    // Delete button
-                                    Button(action: {
-                                        showDeleteAlert.toggle()
-                                    }, label: {
-                                        Image(systemName: "trash")
-                                    })
-                                    .alert(isPresented: $showDeleteAlert){
-                                        Alert(
-                                            title: Text("Are you sure?"),
-                                            message: Text("\"\(entry.exercise.name)\" \n will be deleted from the workout"),
-                                            primaryButton: .destructive(Text("Delete"),action: {
-                                                workout.exercises.removeAll(where: {$0.order == entry.order})
-                                                ensureExercisesHaveOrder()
-                                            }),
-                                            secondaryButton: .cancel()
-                                        )
-                                    }
-                                    
-                                    // Info button
-                                    Button(action: {
-                                        infoExercise = entry.exercise
-                                        showInfoSheet.toggle()
-                                    }, label: {
-                                        Image(systemName: "info.circle.fill")
-                                    })
-                                }
-                            })
-                            .padding(.top)
+                // Scroll View to view all the exercises in the workout
+                List{
+                    ForEach(sortedExercises){entry in
+                        ExerciseItem(entry: entry, onDelete: {
+                            workout.exercises.removeAll(where: {$0.order == entry.order})
+                            updateSortedExercises()
+                        })
+                    }
+                    .onMove(perform: { indices, newOffset in
+                        var exercises = workout.exercises.sorted(by: { $0.order < $1.order })
+                        exercises.move(fromOffsets: indices, toOffset: newOffset)
+                        
+                        for (index, exercise) in exercises.enumerated() {
+                            exercise.order = index
                         }
+                        
+                        try? modelContext.save()
+                    })
+                    .listRowSeparator(.hidden)
+                }
+                .listStyle(.plain)
+                .overlay{
+                    if workout.exercises.isEmpty{
+                        EmptyExercisesView()
                     }
                 }
             }
@@ -88,13 +68,15 @@ struct WorkoutView: View {
                     }
                 }
             }
-            .onAppear(perform: ensureExercisesHaveOrder)
+            .onAppear(perform: updateSortedExercises)
         }
-        .padding()
-        .sheet(isPresented: $showInfoSheet, content: {
-            EditExerciseView(exercise: $infoExercise, isNewExercise: false)
-        })
     }
+    
+    private func updateSortedExercises() {
+        sortedExercises = workout.exercises.sorted(by: { $0.order < $1.order })
+        ensureExercisesHaveOrder()
+    }
+    
     private func ensureExercisesHaveOrder() {
         for (index, exercise) in workout.exercises.sorted(by: {$0.order < $1.order}).enumerated() {
             if exercise.order != index {
@@ -115,6 +97,53 @@ private struct EmptyExercisesView: View {
             Spacer()
         }
         .font(.headline)
+    }
+}
+
+private struct ExerciseItem: View {
+    @State private var showInfoSheet: Bool = false
+    @State private var showDeleteAlert: Bool = false
+    @State private var infoExercise = Exercise(name: "", targetMuscle: .chest)
+    
+    var entry: WorkoutExercise
+    var onDelete: ()->Void
+    
+    var body: some View {
+        GroupBox(content: {
+            Text("\(entry.order+1)")
+        }, label: {
+            HStack(spacing: 16){
+                // Exercise name
+                Text(entry.exercise.name)
+                    .lineLimit(2)
+                Spacer()
+                // Delete button
+                Button(action: {
+                    showDeleteAlert.toggle()
+                }, label: {
+                    Image(systemName: "trash")
+                })
+                .alert(isPresented: $showDeleteAlert){
+                    Alert(
+                        title: Text("Are you sure?"),
+                        message: Text("\"\(entry.exercise.name)\" \n will be deleted from the workout"),
+                        primaryButton: .destructive(Text("Delete"),action: onDelete),
+                        secondaryButton: .cancel()
+                    )
+                }
+                
+                // Info button
+                Button(action: {
+                    infoExercise = entry.exercise
+                    showInfoSheet.toggle()
+                }, label: {
+                    Image(systemName: "info.circle.fill")
+                })
+            }
+        })
+        .sheet(isPresented: $showInfoSheet, content: {
+            EditExerciseView(exercise: $infoExercise, isNewExercise: false)
+        })
     }
 }
 
