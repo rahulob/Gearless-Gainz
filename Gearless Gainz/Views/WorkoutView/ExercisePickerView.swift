@@ -14,7 +14,7 @@ struct ExercisePickerView: View {
     @State private var infoExercise: Exercise = Exercise(name: "", targetMuscle: .chest)
     
     @State private var showSheet = false
-    @State private var isNewExercise = false
+    @State private var isNewExercise = true
     @State private var searchString = ""
     @State private var filterMuscle: TargetMuscle? = nil
     
@@ -142,7 +142,7 @@ struct ExercisePickerView: View {
             }
             // Exercise Info sheet
             .sheet(isPresented: $showSheet, content: {
-                EditExerciseView(exercise: $infoExercise, isNewExercise: isNewExercise)
+                EditExerciseView(exercise: $infoExercise, isNewExercise: $isNewExercise)
             })
             // TODO: Remove this in production
             .onAppear(perform: {

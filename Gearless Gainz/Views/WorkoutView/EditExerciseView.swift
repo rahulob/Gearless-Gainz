@@ -12,39 +12,59 @@ import PhotosUI
 struct EditExerciseView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Query private var allExercises: [Exercise]
+    
     @Binding var exercise: Exercise
-    let isNewExercise: Bool
+    @Binding var isNewExercise: Bool
     @State private var selectedPhoto: PhotosPickerItem?
     @State private var deleteAlert = false
+    @State private var showError = false
+    @State private var errorMessage = ""
 
+    let imageSize: CGFloat = 150
     var body: some View {
         // Form to create or edit the exercise
         NavigationStack{
+            // Photo of the exercise
+            VStack(spacing: 16){
+                if let imageData = exercise.photo, let uiImage = UIImage(data: imageData){
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: imageSize, height: imageSize)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                else{
+                    Image(systemName: "dumbbell")
+                        .font(.system(size: 58))
+                        .rotationEffect(.degrees(45))
+                        .scaledToFill()
+                        .frame(width: imageSize, height: imageSize)
+                        .background(Color.accentColor.opacity(0.2))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                PhotosPicker(selection: $selectedPhoto, matching: .images) {
+                    let label = exercise.photo != nil ? "Change Photo" : "Select Photo"
+                    Label(label, systemImage: "photo")
+                }
+            }
+            .padding(.top)
+            
             List {
-                // Photo of the exercise
-                Section("Add Image"){
-                    if let imageData = exercise.photo, let uiImage = UIImage(data: imageData){
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFit()
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    }
-                    PhotosPicker(selection: $selectedPhoto, matching: .images) {
-                        let label = exercise.photo != nil ? "Change the Photo" : "Select a Photo"
-                        Label(label, systemImage: "photo")
-                            .frame(maxWidth: .infinity)
-                    }
-                }
-                
                 // Name of the exercise
-                Section("Exercise Name"){
-                    TextField("e.g. Bench Press", text: $exercise.name, axis: .vertical)
-                        .fontWeight(.bold)
-                        .font(.title3)
-                }
-                
-                // Description of the exercise
-                Section("Description"){
+                Section("Name and Description"){
+                    VStack(alignment: .leading){
+                        TextField("e.g. Bench Press", text: $exercise.name, axis: .vertical)
+                            .fontWeight(.bold)
+                            .font(.title3)
+                        
+                        if showError{
+                            Text(errorMessage)
+                                .font(.caption)
+                                .foregroundStyle(Color.red)
+                        }
+                    }
+
                     TextField("Describe exercise", text: $exercise.note, axis: .vertical)
                 }
                 
@@ -56,6 +76,7 @@ struct EditExerciseView: View {
                                 .tag(muscle)
                         }
                     }
+                    .pickerStyle(.menu)
                 }
                 
                 // Reference video for the exercise
@@ -70,8 +91,16 @@ struct EditExerciseView: View {
                 Section{
                     if isNewExercise {
                         Button{
-                            dismiss()
-                            modelContext.insert(exercise)
+                            if exercise.name.isEmpty{
+                                errorMessage = "Exercise Name can't be empty"
+                                showError = true
+                            } else if allExercises.contains(where: {$0.name.lowercased() == exercise.name.lowercased()}){
+                                errorMessage = "Exercise already exist"
+                                showError = true
+                            } else {
+                                dismiss()
+                                modelContext.insert(exercise)
+                            }
                         } label: {
                             Text("Save Exercise")
                         }
@@ -124,7 +153,7 @@ private struct EditExerciseViewWithPreview: View {
 //    @State private var path = NavigationPath()
 
     var body: some View {
-        EditExerciseView(exercise: $sampleExercise2, isNewExercise: isNewExercise)
+        EditExerciseView(exercise: $sampleExercise2, isNewExercise: $isNewExercise)
     }
 }
 

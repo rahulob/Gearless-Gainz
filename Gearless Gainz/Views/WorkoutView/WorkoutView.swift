@@ -104,6 +104,7 @@ private struct ExerciseItem: View {
     @State private var showInfoSheet: Bool = false
     @State private var showDeleteAlert: Bool = false
     @State private var infoExercise = Exercise(name: "", targetMuscle: .chest)
+    @State private var newExercise = false
     
     var entry: WorkoutExercise
     var onDelete: ()->Void
@@ -142,7 +143,7 @@ private struct ExerciseItem: View {
             }
         })
         .sheet(isPresented: $showInfoSheet, content: {
-            EditExerciseView(exercise: $infoExercise, isNewExercise: false)
+            EditExerciseView(exercise: $infoExercise, isNewExercise: $newExercise)
         })
     }
 }
