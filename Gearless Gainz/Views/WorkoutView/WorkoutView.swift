@@ -11,8 +11,15 @@ import SwiftData
 struct WorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var workout: Workout
-    @State private var dragItem: String?
-    @State private var sortedExercises: [WorkoutExercise] = []
+    
+    // Fetch exercises for current workout
+    @Query(sort: \WorkoutExercise.order)
+    private var sortedExercises: [WorkoutExercise]
+    private var filteredExercises: [WorkoutExercise] {
+            sortedExercises.filter { $0.workout == workout }
+        }
+    // show alert toggle for deleting the workout
+    @State private var deleteAlert = false
     
     var body: some View {
         NavigationStack{
@@ -30,14 +37,21 @@ struct WorkoutView: View {
                 .buttonStyle(.borderedProminent)
                 .padding()
                 
-                // Scroll View to view all the exercises in the workout
+                // List of all the exercises in the workout
                 List{
-                    ForEach(sortedExercises){entry in
-                        ExerciseItem(entry: entry, onDelete: {
-                            workout.exercises.removeAll(where: {$0.order == entry.order})
-                            updateSortedExercises()
-                        })
+                    ForEach(filteredExercises){entry in
+                        ExerciseItem(entry: entry)
                     }
+                    .onDelete(perform: { indexSet in
+                        for index in indexSet{
+                            for exercise in sortedExercises {
+                                if index == exercise.order {
+                                    modelContext.delete(exercise)
+                                    ensureExercisesHaveOrder()
+                                }
+                            }
+                        }
+                    })
                     .onMove(perform: { indices, newOffset in
                         var exercises = workout.exercises.sorted(by: { $0.order < $1.order })
                         exercises.move(fromOffsets: indices, toOffset: newOffset)
@@ -61,24 +75,29 @@ struct WorkoutView: View {
                 ToolbarItem{
                     Menu{
                         Button("Delete workout"){
-                            modelContext.delete(workout)
+                            deleteAlert.toggle()
                         }
                     } label: {
                         Image(systemName: "ellipsis")
                     }
                 }
             }
-            .onAppear(perform: updateSortedExercises)
+            .onAppear(perform: ensureExercisesHaveOrder)
+            .alert(isPresented: $deleteAlert){
+                Alert(
+                    title: Text("Are you sure?"),
+                    message: Text("Entire workout will be deleted"),
+                    primaryButton: .destructive(Text("Delete"), action: {
+                        modelContext.delete(workout)
+                    }),
+                    secondaryButton: .cancel()
+                )
+            }
         }
     }
     
-    private func updateSortedExercises() {
-        sortedExercises = workout.exercises.sorted(by: { $0.order < $1.order })
-        ensureExercisesHaveOrder()
-    }
-    
     private func ensureExercisesHaveOrder() {
-        for (index, exercise) in workout.exercises.sorted(by: {$0.order < $1.order}).enumerated() {
+        for (index, exercise) in filteredExercises.enumerated() {
             if exercise.order != index {
                 exercise.order = index
             }
@@ -101,50 +120,83 @@ private struct EmptyExercisesView: View {
 }
 
 private struct ExerciseItem: View {
-    @State private var showInfoSheet: Bool = false
     @State private var showDeleteAlert: Bool = false
-    @State private var infoExercise = Exercise(name: "", targetMuscle: .chest)
-    @State private var newExercise = false
     
     var entry: WorkoutExercise
-    var onDelete: ()->Void
+    @State var imageSize: Float32 = 48
     
     var body: some View {
-        GroupBox(content: {
-            Text("\(entry.order+1)")
-        }, label: {
-            HStack(spacing: 16){
-                // Exercise name
-                Text(entry.exercise.name)
-                    .lineLimit(2)
-                Spacer()
-                // Delete button
-                Button(action: {
-                    showDeleteAlert.toggle()
-                }, label: {
-                    Image(systemName: "trash")
-                })
-                .alert(isPresented: $showDeleteAlert){
-                    Alert(
-                        title: Text("Are you sure?"),
-                        message: Text("\"\(entry.exercise.name)\" \n will be deleted from the workout"),
-                        primaryButton: .destructive(Text("Delete"),action: onDelete),
-                        secondaryButton: .cancel()
-                    )
+        GroupBox{
+            ExerciseListItem(exercise: entry.exercise!)
+            
+            Grid{
+                GridRow{
+                    Text("Set")
+                    
+                    Text("Type")
+                        .frame(maxWidth: .infinity)
+                    
+                    Label("kg", systemImage: "dumbbell.fill")
+                        .frame(maxWidth: .infinity)
+                    
+                    Text("Reps")
+                        .frame(maxWidth: .infinity)
                 }
+                .fontWeight(.bold)
                 
-                // Info button
-                Button(action: {
-                    infoExercise = entry.exercise
-                    showInfoSheet.toggle()
-                }, label: {
-                    Image(systemName: "info.circle.fill")
-                })
+                ForEach(entry.sets){workoutSet in
+                    GridRow{
+                        Text("1")
+                        
+                        VStack{
+                            Text("Working")
+                            Text("Drop Set")
+                        }
+                        
+                        VStack{
+                            TextField(
+                                "0.0",
+                                value: $imageSize,
+                                format: .number
+                            )
+                            .multilineTextAlignment(.center)
+                            
+                            TextField(
+                                "0.0",
+                                value: $imageSize,
+                                format: .number
+                            )
+                            .multilineTextAlignment(.center)
+                        }
+                        
+                        VStack{
+                            TextField(
+                                "0.0",
+                                value: $imageSize,
+                                format: .number
+                            )
+                            .multilineTextAlignment(.center)
+                            
+                            TextField(
+                                "0.0",
+                                value: $imageSize,
+                                format: .number
+                            )
+                            .multilineTextAlignment(.center)
+                        }
+                    }
+                }
             }
-        })
-        .sheet(isPresented: $showInfoSheet, content: {
-            EditExerciseView(exercise: $infoExercise, isNewExercise: $newExercise)
-        })
+            Button(
+                action: {
+                    entry.sets.append(ExerciseSet(weight: 0, reps: 0))
+                }, label: {
+                    Label("Add set", systemImage: "plus")
+                        .frame(maxWidth: .infinity)
+                }
+            )
+            .buttonStyle(BorderedButtonStyle())
+        }
     }
 }
 

@@ -10,7 +10,7 @@ import SwiftData
 
 struct CalendarTab: View {
     @Query private var workouts: [Workout]
-//    @State private var workoutCounts: [Date: Int] = [:]
+    @Query private var workoutExercises: [WorkoutExercise]
     @State private var selectedDate: Date = Date()
     
     let boxSize: CGFloat = 40
@@ -85,6 +85,9 @@ struct CalendarTab: View {
             }
             
             Spacer()
+            ForEach(workoutExercises){ entry in
+                Text(entry.exercise!.name)
+            }
         }
         .padding()
     }

@@ -10,17 +10,14 @@ import SwiftData
 
 struct ExercisePickerView: View {
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
-    @State private var selections = [Exercise]()
-    @State private var infoExercise: Exercise = Exercise(name: "", targetMuscle: .chest)
-    
-    @State private var showSheet = false
-    @State private var isNewExercise = true
-    @State private var searchString = ""
-    @State private var filterMuscle: TargetMuscle? = nil
-    
-    @Bindable var workout: Workout
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Bindable var workout: Workout
+    
+    @State private var selections = [Exercise]()
+    @State private var newExercise: Exercise = Exercise(name: "", targetMuscle: .chest)
+    @State private var searchString = ""
+    @State private var filterMuscle: TargetMuscle? = nil
     
     private var filteredExercises: [Exercise] {
             exercises
@@ -56,7 +53,7 @@ struct ExercisePickerView: View {
                 
                 // Create new exercise and add to workout buttons
                 HStack{
-                    Button(action: createNewExercise){
+                    NavigationLink(destination: EditExerciseView(exercise: $newExercise, isNewExercise: true)){
                         Label("New", systemImage: "plus")
                             .frame(maxWidth: .infinity)
                             .padding(8)
@@ -66,7 +63,9 @@ struct ExercisePickerView: View {
                     Button(action: {
                         let count = workout.exercises.count
                         for (index, exercise) in selections.enumerated() {
-                            workout.exercises.append(WorkoutExercise(exercise: exercise, order: count+index))
+                            let workoutExercise = WorkoutExercise(exercise: exercise, order: count+index, workout: workout)
+//                            exercise.history.append(workoutExercise)
+                            modelContext.insert(workoutExercise)
                         }
                         dismiss()
                     }, label: {
@@ -84,30 +83,26 @@ struct ExercisePickerView: View {
                 ScrollView{
                     LazyVStack{
                         ForEach(filteredExercises){exercise in
-                            ListItem(
-                                isSelected: selections.contains(exercise),
-                                exercise: exercise,
-                                onInfoClick: {
-                                    isNewExercise = false
-                                    infoExercise = exercise
-                                    showSheet.toggle()
+                            ExerciseListItem(exercise: exercise)
+                                .padding()
+                                .background(selections.contains(exercise) ? Color.accentColor.opacity(0.5) : .gray.opacity(0.1))
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .onTapGesture {
+                                    if selections.contains(exercise){
+                                        let index = selections.firstIndex(of: exercise)
+                                        selections.remove(at: index!)
+                                    } else {
+                                        selections.append(exercise)
+                                    }
                                 }
-                            )
-                            .onTapGesture {
-                                if selections.contains(exercise){
-                                    let index = selections.firstIndex(of: exercise)
-                                    selections.remove(at: index!)
-                                } else {
-                                    selections.append(exercise)
-                                }
-                            }
                         }
+                        .listStyle(.plain)
                     }
                 }
                 // Overlay to show buttons when the exercise list is empty
                 .overlay(content: {
                     if exercises.isEmpty{
-                        EmptyListView(createNewExercise: createNewExercise, loadDefaultExercises: loadDefaultExercises)
+                        EmptyListView(loadDefaultExercises: loadDefaultExercises)
                     }
                 })
             }
@@ -140,21 +135,13 @@ struct ExercisePickerView: View {
                     })
                 }
             }
-            // Exercise Info sheet
-            .sheet(isPresented: $showSheet, content: {
-                EditExerciseView(exercise: $infoExercise, isNewExercise: $isNewExercise)
+            .onChange(of: searchString, {
+                newExercise.name = searchString
             })
-            // TODO: Remove this in production
-            .onAppear(perform: {
-                loadDefaultExercises()
+            .onChange(of: filterMuscle, {
+                newExercise.targetMuscle = filterMuscle ?? .chest
             })
         }
-    }
-    
-    func createNewExercise(){
-        isNewExercise = true
-        infoExercise = Exercise(name: searchString, targetMuscle: filterMuscle ?? .chest)
-        showSheet.toggle()
     }
     
     func loadDefaultExercises(){
@@ -165,7 +152,6 @@ struct ExercisePickerView: View {
 }
 
 private struct EmptyListView: View {
-    var createNewExercise: ()->Void
     var loadDefaultExercises: ()->Void
     
     var body: some View {
@@ -178,55 +164,8 @@ private struct EmptyListView: View {
                 Label("Load Default Exercises", systemImage: "arrow.2.circlepath")
                     .frame(maxWidth: .infinity)
             }.buttonStyle(.borderedProminent)
-            // New Exercise Button
-            Button(action: createNewExercise){
-                Label("Create New Exercise", systemImage: "plus")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
         }
         .padding(32)
-    }
-}
-
-private struct ListItem: View {
-    var isSelected: Bool
-    var exercise: Exercise
-    var onInfoClick: ()->Void
-    
-    var body: some View {
-        HStack(spacing: 16){
-            if let imageData = exercise.photo, let uiImage = UIImage(data: imageData){
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 48, height: 48)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            } else{
-                Image(systemName: isSelected ? "dumbbell.fill" : "dumbbell")
-                    .font(.title)
-                    .frame(width: 48, height: 48)
-            }
-            
-            VStack(alignment: .leading){
-                Text(exercise.name)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .lineLimit(2)
-                
-                Text(exercise.targetMuscle.displayName)
-                    .font(.caption)
-            }
-            Spacer()
-            
-            Button(action: onInfoClick, label: {
-                Image(systemName: "info.circle.fill")
-                    .foregroundStyle(Color.gray)
-            })
-        }
-        .padding()
-        .background(isSelected ? Color.accentColor.opacity(0.5) : .gray.opacity(0.1))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
 

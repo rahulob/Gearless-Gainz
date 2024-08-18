@@ -13,36 +13,21 @@ struct EditExerciseView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query private var allExercises: [Exercise]
+    @Query private var workoutExercises: [WorkoutExercise]
     
     @Binding var exercise: Exercise
-    @Binding var isNewExercise: Bool
+    var isNewExercise: Bool
     @State private var selectedPhoto: PhotosPickerItem?
     @State private var deleteAlert = false
     @State private var showError = false
     @State private var errorMessage = ""
 
-    let imageSize: CGFloat = 150
     var body: some View {
         // Form to create or edit the exercise
         NavigationStack{
             // Photo of the exercise
             VStack(spacing: 16){
-                if let imageData = exercise.photo, let uiImage = UIImage(data: imageData){
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: imageSize, height: imageSize)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                else{
-                    Image(systemName: "dumbbell")
-                        .font(.system(size: 58))
-                        .rotationEffect(.degrees(45))
-                        .scaledToFill()
-                        .frame(width: imageSize, height: imageSize)
-                        .background(Color.accentColor.opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
+                ExerciseImage(photoData: exercise.photo, imageSize: 150, iconSize: 75)
                 PhotosPicker(selection: $selectedPhoto, matching: .images) {
                     let label = exercise.photo != nil ? "Change Photo" : "Select Photo"
                     Label(label, systemImage: "photo")
@@ -89,24 +74,7 @@ struct EditExerciseView: View {
                 
                 // Save exercise button
                 Section{
-                    if isNewExercise {
-                        Button{
-                            if exercise.name.isEmpty{
-                                errorMessage = "Exercise Name can't be empty"
-                                showError = true
-                            } else if allExercises.contains(where: {$0.name.lowercased() == exercise.name.lowercased()}){
-                                errorMessage = "Exercise already exist"
-                                showError = true
-                            } else {
-                                dismiss()
-                                modelContext.insert(exercise)
-                            }
-                        } label: {
-                            Text("Save Exercise")
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    else {
+                    if !isNewExercise {
                         Button{
                             deleteAlert.toggle()
                         } label: {
@@ -119,8 +87,13 @@ struct EditExerciseView: View {
                                 title: Text("Are you sure?"),
                                 message: Text("\"\(exercise.name)\" \n will be deleted from everywhere"),
                                 primaryButton: .destructive(Text("Delete"),action: {
-                                    dismiss()
                                     modelContext.delete(exercise)
+                                    for workoutExercise in workoutExercises {
+                                        if workoutExercise.exercise == exercise {
+                                            modelContext.delete(workoutExercise)
+                                        }
+                                    }
+                                    dismiss()
                                 }),
                                 secondaryButton: .cancel()
                             )
@@ -130,10 +103,21 @@ struct EditExerciseView: View {
             }
             .navigationTitle(isNewExercise ? "Create New Exercise" : "Exercise Info")
             .toolbar{
-                ToolbarItem(placement: .topBarLeading){
-                    Button(action: {dismiss()}, label: {
-                        Image(systemName: "xmark.circle.fill")
-                    })
+                ToolbarItem{
+                    Button(action: {
+                        if exercise.name.isEmpty{
+                            errorMessage = "Exercise Name can't be empty"
+                            showError = true
+                        } else if allExercises.contains(where: {$0.name.lowercased() == exercise.name.lowercased() && $0.id != exercise.id}){
+                            errorMessage = "Exercise already exist"
+                            showError = true
+                        } else {
+                            dismiss()
+                            modelContext.insert(exercise)
+                        }
+                    }){
+                        Text("Save")
+                    }
                 }
             }
             .onChange(of: selectedPhoto, loadPhoto)
@@ -153,7 +137,7 @@ private struct EditExerciseViewWithPreview: View {
 //    @State private var path = NavigationPath()
 
     var body: some View {
-        EditExerciseView(exercise: $sampleExercise2, isNewExercise: $isNewExercise)
+        EditExerciseView(exercise: $sampleExercise2, isNewExercise: isNewExercise)
     }
 }
 

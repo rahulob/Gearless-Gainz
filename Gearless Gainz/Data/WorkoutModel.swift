@@ -35,12 +35,13 @@ enum TargetMuscle: String, Codable, CaseIterable {
 final class Workout: Identifiable{
     var id: UUID
     var date: Date
-    var exercises: [WorkoutExercise]
     
-    init(id: UUID = UUID(), date: Date, exercises: [WorkoutExercise] = []) {
+    @Relationship(deleteRule: .cascade)
+    var exercises = [WorkoutExercise]()
+    
+    init(id: UUID = UUID(), date: Date) {
         self.id = id
         self.date = date
-        self.exercises = exercises
     }
 }
 
@@ -48,34 +49,17 @@ final class Workout: Identifiable{
 @Model
 final class WorkoutExercise: Identifiable {
     var id: UUID
-    var exercise: Exercise
     var sets: [ExerciseSet]
     var order: Int
+    var workout: Workout?
+    var exercise: Exercise?
     
-    init(id: UUID = UUID(), exercise: Exercise, sets: [ExerciseSet]=[], order: Int) {
+    init(id: UUID = UUID(), exercise: Exercise? = nil, sets: [ExerciseSet]=[], order: Int, workout: Workout? = nil) {
         self.id = id
         self.exercise = exercise
         self.sets = sets
         self.order = order
-    }
-}
-
-// TODO: delete the entry of the exercises if you delete the exercise
-@Model
-final class Exercise: Identifiable{
-    var id: UUID
-    @Attribute(.unique) var name: String
-    var note: String
-    var targetMuscle: TargetMuscle
-    var youtubeURL: URL?
-    @Attribute(.externalStorage) var photo: Data?
-    
-    init(id: UUID = UUID(), name: String, targetMuscle: TargetMuscle, note: String = "", youtubeURL: URL? = nil) {
-        self.id = id
-        self.name = name
-        self.targetMuscle = targetMuscle
-        self.note = note
-        self.youtubeURL = youtubeURL
+        self.workout = workout
     }
 }
 

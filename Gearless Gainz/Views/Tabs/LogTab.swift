@@ -11,7 +11,6 @@ import SwiftData
 struct LogTab: View {
     @State var selectedDate: Date = Date.now
     @Query var todayWorkouts: [Workout]
-//    @State private var path = NavigationPath()
     
     var body: some View {
         NavigationStack{
