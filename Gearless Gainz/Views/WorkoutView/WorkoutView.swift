@@ -13,9 +13,9 @@ struct WorkoutView: View {
     @Bindable var workout: Workout
     
     // Fetch exercises for current workout
-    @Query(sort: \WorkoutExercise.order)
-    private var sortedExercises: [WorkoutExercise]
-    private var filteredExercises: [WorkoutExercise] {
+    @Query(sort: \WorkoutEntry.order)
+    private var sortedExercises: [WorkoutEntry]
+    private var filteredExercises: [WorkoutEntry] {
             sortedExercises.filter { $0.workout == workout }
         }
     // show alert toggle for deleting the workout
@@ -40,10 +40,10 @@ struct WorkoutView: View {
                 // List of all the exercises in the workout
                 List{
                     ForEach(filteredExercises){entry in
-                        WorkoutExerciseItem(entry: entry)
+                        WorkoutEntryItem(entry: entry)
                     }
                     .onMove(perform: { indices, newOffset in
-                        var exercises = workout.exercises.sorted(by: { $0.order < $1.order })
+                        var exercises = filteredExercises
                         exercises.move(fromOffsets: indices, toOffset: newOffset)
                         
                         for (index, exercise) in exercises.enumerated() {

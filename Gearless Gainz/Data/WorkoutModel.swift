@@ -35,26 +35,28 @@ enum TargetMuscle: String, Codable, CaseIterable {
 final class Workout: Identifiable{
     var id: UUID
     var date: Date
+    var name: String?
     
     @Relationship(deleteRule: .cascade)
-    var exercises = [WorkoutExercise]()
+    var exercises = [WorkoutEntry]()
     
-    init(id: UUID = UUID(), date: Date) {
+    init(id: UUID = UUID(), date: Date, name: String? = nil) {
         self.id = id
         self.date = date
+        self.name = name
     }
 }
 
 // This will be the exercise data inside each workout
 @Model
-final class WorkoutExercise: Identifiable {
+final class WorkoutEntry: Identifiable {
     var id: UUID
     var sets: [ExerciseSet]
     var order: Int
-    var workout: Workout
+    var workout: Workout?
     var exercise: Exercise
     
-    init(id: UUID = UUID(), exercise: Exercise, sets: [ExerciseSet]=[], order: Int, workout: Workout) {
+    init(id: UUID = UUID(), exercise: Exercise, sets: [ExerciseSet]=[], order: Int, workout: Workout? = nil) {
         self.id = id
         self.exercise = exercise
         self.sets = sets

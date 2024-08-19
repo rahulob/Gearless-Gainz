@@ -14,7 +14,7 @@ struct ExercisePickerView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var workout: Workout
     
-    @State private var selections = [Exercise]()
+    @State private var selectedExercises = [Exercise]()
     @State private var newExercise: Exercise = Exercise(name: "", targetMuscle: .chest)
     @State private var searchString = ""
     @State private var filterMuscle: TargetMuscle? = nil
@@ -22,7 +22,7 @@ struct ExercisePickerView: View {
     private var filteredExercises: [Exercise] {
             exercises
             .filter { exercise in
-                if selections.contains(exercise){
+                if selectedExercises.contains(exercise){
                     true
                 } else{
                     (filterMuscle == nil || exercise.targetMuscle == filterMuscle)
@@ -62,18 +62,18 @@ struct ExercisePickerView: View {
                     
                     Button(action: {
                         let count = workout.exercises.count
-                        for (index, exercise) in selections.enumerated() {
-                            let workoutExercise = WorkoutExercise(exercise: exercise, order: count+index, workout: workout)
+                        for (index, exercise) in selectedExercises.enumerated() {
+                            let workoutExercise = WorkoutEntry(exercise: exercise, order: count+index, workout: workout)
 //                            exercise.history.append(workoutExercise)
                             modelContext.insert(workoutExercise)
                         }
                         dismiss()
                     }, label: {
-                        Label("Add \(selections.count)", systemImage: "checkmark")
+                        Label("Add \(selectedExercises.count)", systemImage: "checkmark")
                             .frame(maxWidth: .infinity)
                             .padding(8)
                     })
-                    .disabled(selections.isEmpty)
+                    .disabled(selectedExercises.isEmpty)
                     .buttonStyle(.borderedProminent)
                 }
                 .font(.system(size: 18))
@@ -85,14 +85,14 @@ struct ExercisePickerView: View {
                         ForEach(filteredExercises){exercise in
                             ExerciseListItem(exercise: exercise)
                                 .padding()
-                                .background(selections.contains(exercise) ? Color.accentColor.opacity(0.5) : .gray.opacity(0.1))
+                                .background(selectedExercises.contains(exercise) ? Color.accentColor.opacity(0.5) : .gray.opacity(0.1))
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                                 .onTapGesture {
-                                    if selections.contains(exercise){
-                                        let index = selections.firstIndex(of: exercise)
-                                        selections.remove(at: index!)
+                                    if selectedExercises.contains(exercise){
+                                        let index = selectedExercises.firstIndex(of: exercise)
+                                        selectedExercises.remove(at: index!)
                                     } else {
-                                        selections.append(exercise)
+                                        selectedExercises.append(exercise)
                                     }
                                 }
                         }
@@ -109,6 +109,7 @@ struct ExercisePickerView: View {
             .padding(.horizontal)
             //navigation title
             .navigationTitle("Select exercises")
+            .toolbarTitleDisplayMode(.inline)
             // Toolbar with buttons to create exercise and add them to workout
             .toolbar{
                 ToolbarItem{
@@ -174,7 +175,7 @@ private struct EmptyListView: View {
     let container = try! ModelContainer(for: Workout.self, configurations: config)
 
     let w = Workout(date: .now)
-//    @State var path = NavigationPath()
+
     return ExercisePickerView(workout: w)
         .modelContainer(container)
 }

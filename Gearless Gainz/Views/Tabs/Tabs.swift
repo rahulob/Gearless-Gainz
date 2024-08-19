@@ -17,6 +17,10 @@ struct Tabs: View {
             // Tab for viewing the workout history
             CalendarTab()
                 .tabItem { Label("HISTORY", systemImage: "calendar") }
+            
+            // Tab for viewing the workout history
+            SettingsTab()
+                .tabItem { Label("Settings", systemImage: "gear") }
         }
     }
 }

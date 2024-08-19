@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct WorkoutExerciseItem: View {
+struct WorkoutEntryItem: View {
     @Environment(\.modelContext) var modelContext
     @State private var showDeleteAlert: Bool = false
     
-    var entry: WorkoutExercise
+    var entry: WorkoutEntry
     @State var showMenuSheet = false
     
     var body: some View {
@@ -19,9 +19,6 @@ struct WorkoutExerciseItem: View {
             HStack(spacing: 16){
                 ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
                 Menu("", systemImage: "ellipsis", content: {
-                    Button("Reorder Exercises", systemImage: "arrow.up.arrow.down"){
-                        
-                    }
                     Button("Replace Exercise", systemImage: "arrow.triangle.2.circlepath"){
                         
                     }
@@ -31,6 +28,7 @@ struct WorkoutExerciseItem: View {
                 })
                 .buttonStyle(PlainButtonStyle())
             }
+            Text("\(entry.order)")
             Grid{
                 GridRow{
                     Text("Set")

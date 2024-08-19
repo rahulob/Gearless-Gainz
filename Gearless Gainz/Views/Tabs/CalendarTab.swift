@@ -10,7 +10,6 @@ import SwiftData
 
 struct CalendarTab: View {
     @Query private var workouts: [Workout]
-    @Query private var workoutExercises: [WorkoutExercise]
     @State private var selectedDate: Date = Date()
     
     let boxSize: CGFloat = 40
@@ -34,62 +33,63 @@ struct CalendarTab: View {
     }
     
     var body: some View {
-        VStack(spacing: boxSize/2) {
-            // Month picker
-            HStack {
-                Button {
-                    selectedDate = calendar.date(byAdding: .month, value: -1, to: selectedDate)!
-                } label: {
-                    Image(systemName: "arrowtriangle.backward.fill")
+        NavigationStack{
+            VStack(spacing: boxSize/2) {
+                // Month picker
+                HStack {
+                    Button {
+                        selectedDate = calendar.date(byAdding: .month, value: -1, to: selectedDate)!
+                    } label: {
+                        Image(systemName: "arrowtriangle.backward.fill")
+                    }
+                    Spacer()
+                    DatePicker(
+                        "Day",
+                        selection: $selectedDate,
+                        in: ...Date.now, 
+                        displayedComponents: .date
+                    )
+                    .labelsHidden()
+                    
+                    Spacer()
+                    Button{
+                        selectedDate = calendar.date(byAdding: .month, value: 1, to: selectedDate)!
+                    } label: {
+                        Image(systemName: "arrowtriangle.forward.fill")
+                    }
                 }
-                Spacer()
-                DatePicker(
-                    "Day",
-                    selection: $selectedDate,
-                    displayedComponents: [.date]
-                )
-                .labelsHidden()
+                
+                // Day labels
+                DayLabels(height: boxSize/1.5)
+                
+                // Grid of days
+                LazyVGrid(columns: columns, spacing: boxSize/3) {
+                    // Empty cells before the first day of the month
+                    ForEach(0..<monthInfo.offset, id: \.self) { _ in
+                        Text("")
+                            .frame(width: boxSize, height: boxSize)
+                            .background(Color.clear)
+                    }
+                    ForEach(monthInfo.allDates, id: \.self) { date in
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(
+                                calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? .accentColor.opacity(0.7) : colorForDate(date)
+                            )
+                            .frame(width: boxSize, height: boxSize)
+                            .overlay(
+                                Text(date.formatted(.dateTime.day()))
+                            )
+                            .onTapGesture {
+                                selectedDate = date
+                            }
+                    }
+                }
                 
                 Spacer()
-                Button{
-                    selectedDate = calendar.date(byAdding: .month, value: 1, to: selectedDate)!
-                } label: {
-                    Image(systemName: "arrowtriangle.forward.fill")
-                }
             }
-            
-            // Day labels
-            DayLabels(height: boxSize/1.5)
-            
-            // Grid of days
-            LazyVGrid(columns: columns, spacing: boxSize/3) {
-                // Empty cells before the first day of the month
-                ForEach(0..<monthInfo.offset, id: \.self) { _ in
-                    Text("")
-                        .frame(width: boxSize, height: boxSize)
-                        .background(Color.clear)
-                }
-                ForEach(monthInfo.allDates, id: \.self) { date in
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(
-                            calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? .accentColor.opacity(0.7) : colorForDate(date)
-                        )
-                        .frame(width: boxSize, height: boxSize)
-                        .overlay(
-                            Text(date.formatted(.dateTime.day()))
-                        )
-                        .onTapGesture {
-                            selectedDate = date
-                        }
-                }
-            }
-            
-            Spacer()
-            ForEach(workoutExercises){ entry in
-                Text(entry.exercise.name)
-            }
+            .padding()
+            .navigationTitle("Workout History")
         }
-        .padding()
     }
     
     private func colorForDate(_ date: Date) -> Color {

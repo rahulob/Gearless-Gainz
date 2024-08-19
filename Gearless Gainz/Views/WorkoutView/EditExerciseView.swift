@@ -13,7 +13,7 @@ struct EditExerciseView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query private var allExercises: [Exercise]
-    @Query private var workoutExercises: [WorkoutExercise]
+    @Query private var workoutExercises: [WorkoutEntry]
     
     @Binding var exercise: Exercise
     var isNewExercise: Bool
@@ -43,7 +43,7 @@ struct EditExerciseView: View {
                         Spacer()
                         VStack(spacing: 16){
                             PhotosPicker(selection: $selectedPhoto, matching: .images) {
-                                let label = selectedPhoto != nil ? "Change Photo" : "Select Photo"
+                                let label = selectedPhotoData != nil ? "Change Photo" : "Select Photo"
                                 Label(label, systemImage: "photo")
                                     .foregroundStyle(Color.primary)
                             }
@@ -126,6 +126,7 @@ struct EditExerciseView: View {
                 }
             }
             .navigationTitle(isNewExercise ? "Create New Exercise" : "Exercise Info")
+            .toolbarTitleDisplayMode(.inline)
             .toolbar{
                 ToolbarItem{
                     Button(action: {

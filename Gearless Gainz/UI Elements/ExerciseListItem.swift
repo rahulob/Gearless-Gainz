@@ -37,6 +37,7 @@ private struct ExerciseName: View {
                 .font(.title3)
                 .fontWeight(.bold)
                 .lineLimit(2)
+                .multilineTextAlignment(.leading)
             
             Text(targetMuscle)
                 .font(.caption)
