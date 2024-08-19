@@ -35,23 +35,13 @@ struct WorkoutView: View {
                         .padding(8)
                 }
                 .buttonStyle(.borderedProminent)
-                .padding()
+                .padding(.horizontal)
                 
                 // List of all the exercises in the workout
                 List{
                     ForEach(filteredExercises){entry in
-                        ExerciseItem(entry: entry)
+                        WorkoutExerciseItem(entry: entry)
                     }
-                    .onDelete(perform: { indexSet in
-                        for index in indexSet{
-                            for exercise in sortedExercises {
-                                if index == exercise.order {
-                                    modelContext.delete(exercise)
-                                    ensureExercisesHaveOrder()
-                                }
-                            }
-                        }
-                    })
                     .onMove(perform: { indices, newOffset in
                         var exercises = workout.exercises.sorted(by: { $0.order < $1.order })
                         exercises.move(fromOffsets: indices, toOffset: newOffset)
@@ -59,8 +49,6 @@ struct WorkoutView: View {
                         for (index, exercise) in exercises.enumerated() {
                             exercise.order = index
                         }
-                        
-                        try? modelContext.save()
                     })
                     .listRowSeparator(.hidden)
                 }
@@ -116,87 +104,6 @@ private struct EmptyExercisesView: View {
             Spacer()
         }
         .font(.headline)
-    }
-}
-
-private struct ExerciseItem: View {
-    @State private var showDeleteAlert: Bool = false
-    
-    var entry: WorkoutExercise
-    @State var imageSize: Float32 = 48
-    
-    var body: some View {
-        GroupBox{
-            ExerciseListItem(exercise: entry.exercise!)
-            
-            Grid{
-                GridRow{
-                    Text("Set")
-                    
-                    Text("Type")
-                        .frame(maxWidth: .infinity)
-                    
-                    Label("kg", systemImage: "dumbbell.fill")
-                        .frame(maxWidth: .infinity)
-                    
-                    Text("Reps")
-                        .frame(maxWidth: .infinity)
-                }
-                .fontWeight(.bold)
-                
-                ForEach(entry.sets){workoutSet in
-                    GridRow{
-                        Text("1")
-                        
-                        VStack{
-                            Text("Working")
-                            Text("Drop Set")
-                        }
-                        
-                        VStack{
-                            TextField(
-                                "0.0",
-                                value: $imageSize,
-                                format: .number
-                            )
-                            .multilineTextAlignment(.center)
-                            
-                            TextField(
-                                "0.0",
-                                value: $imageSize,
-                                format: .number
-                            )
-                            .multilineTextAlignment(.center)
-                        }
-                        
-                        VStack{
-                            TextField(
-                                "0.0",
-                                value: $imageSize,
-                                format: .number
-                            )
-                            .multilineTextAlignment(.center)
-                            
-                            TextField(
-                                "0.0",
-                                value: $imageSize,
-                                format: .number
-                            )
-                            .multilineTextAlignment(.center)
-                        }
-                    }
-                }
-            }
-            Button(
-                action: {
-                    entry.sets.append(ExerciseSet(weight: 0, reps: 0))
-                }, label: {
-                    Label("Add set", systemImage: "plus")
-                        .frame(maxWidth: .infinity)
-                }
-            )
-            .buttonStyle(BorderedButtonStyle())
-        }
     }
 }
 

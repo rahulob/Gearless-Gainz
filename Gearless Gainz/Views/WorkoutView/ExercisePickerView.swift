@@ -141,6 +141,7 @@ struct ExercisePickerView: View {
             .onChange(of: filterMuscle, {
                 newExercise.targetMuscle = filterMuscle ?? .chest
             })
+            .onAppear(perform: loadDefaultExercises)
         }
     }
     

@@ -17,7 +17,18 @@ struct EditExerciseView: View {
     
     @Binding var exercise: Exercise
     var isNewExercise: Bool
+    
+    // State variables for photo
     @State private var selectedPhoto: PhotosPickerItem?
+    @State private var selectedPhotoData: Data?
+    
+    // State variables for textfields
+    @State private var exerciseName: String = ""
+    @State private var exerciseDescription: String = ""
+    @State private var exerciseURL: URL?
+    @State private var targetMuscle: TargetMuscle = .chest
+    
+    // State variables for alert and for validation of creating new exercise
     @State private var deleteAlert = false
     @State private var showError = false
     @State private var errorMessage = ""
@@ -25,21 +36,33 @@ struct EditExerciseView: View {
     var body: some View {
         // Form to create or edit the exercise
         NavigationStack{
-            // Photo of the exercise
-            VStack(spacing: 16){
-                ExerciseImage(photoData: exercise.photo, imageSize: 150, iconSize: 75)
-                PhotosPicker(selection: $selectedPhoto, matching: .images) {
-                    let label = exercise.photo != nil ? "Change Photo" : "Select Photo"
-                    Label(label, systemImage: "photo")
-                }
-            }
-            .padding(.top)
-            
             List {
+                Section("Select Photo"){
+                    HStack{
+                        ExerciseImage(photoData: selectedPhotoData, imageSize: 100, iconSize: 50)
+                        Spacer()
+                        VStack(spacing: 16){
+                            PhotosPicker(selection: $selectedPhoto, matching: .images) {
+                                let label = selectedPhoto != nil ? "Change Photo" : "Select Photo"
+                                Label(label, systemImage: "photo")
+                                    .foregroundStyle(Color.primary)
+                            }
+                            if selectedPhotoData != nil {
+                                Button("Remove Photo", systemImage: "trash"){
+                                    selectedPhoto = nil
+                                }
+                                .foregroundStyle(Color.red)
+                            }
+                        }
+                        .font(.system(size: 16))
+                        .padding(.trailing)
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
                 // Name of the exercise
                 Section("Name and Description"){
                     VStack(alignment: .leading){
-                        TextField("e.g. Bench Press", text: $exercise.name, axis: .vertical)
+                        TextField("e.g. Bench Press", text: $exerciseName, axis: .vertical)
                             .fontWeight(.bold)
                             .font(.title3)
                         
@@ -50,12 +73,12 @@ struct EditExerciseView: View {
                         }
                     }
 
-                    TextField("Describe exercise", text: $exercise.note, axis: .vertical)
+                    TextField("Describe exercise", text: $exerciseDescription, axis: .vertical)
                 }
                 
                 // Picker for selecting the target muscle
                 Section("Target Muscle Group"){
-                    Picker("Target Muscle", selection: $exercise.targetMuscle) {
+                    Picker("Target Muscle", selection: $targetMuscle) {
                         ForEach(TargetMuscle.allCases, id: \.self) { muscle in
                             Text(muscle.displayName)
                                 .tag(muscle)
@@ -66,7 +89,7 @@ struct EditExerciseView: View {
                 
                 // Reference video for the exercise
                 Section("Reference Video"){
-                    TextField("Youtube Video URL", value: $exercise.youtubeURL, format: .url)
+                    TextField("Youtube Video URL", value: $exerciseURL, format: .url)
                         .keyboardType(.URL)
                         .disableAutocorrection(true)
                         .autocapitalization(.none)
@@ -105,15 +128,22 @@ struct EditExerciseView: View {
             .toolbar{
                 ToolbarItem{
                     Button(action: {
-                        if exercise.name.isEmpty{
+                        if exerciseName.isEmpty{
                             errorMessage = "Exercise Name can't be empty"
                             showError = true
-                        } else if allExercises.contains(where: {$0.name.lowercased() == exercise.name.lowercased() && $0.id != exercise.id}){
+                        } else if allExercises.contains(where: {$0.name.lowercased() == exerciseName.lowercased() && $0.id != exercise.id}){
                             errorMessage = "Exercise already exist"
                             showError = true
                         } else {
                             dismiss()
-                            modelContext.insert(exercise)
+                            exercise.name = exerciseName
+                            exercise.note = exerciseDescription
+                            exercise.photo = selectedPhotoData
+                            exercise.youtubeURL = exerciseURL
+                            exercise.targetMuscle = targetMuscle
+                            if isNewExercise{
+                                modelContext.insert(exercise)
+                            }
                         }
                     }){
                         Text("Save")
@@ -121,11 +151,18 @@ struct EditExerciseView: View {
                 }
             }
             .onChange(of: selectedPhoto, loadPhoto)
+            .onAppear(perform: {
+                exerciseName = exercise.name
+                exerciseDescription = exercise.note
+                selectedPhotoData = exercise.photo
+                exerciseURL = exercise.youtubeURL
+                targetMuscle = exercise.targetMuscle
+            })
         }
     }
     func loadPhoto() {
         Task { @MainActor in
-            exercise.photo = try await selectedPhoto?.loadTransferable(type: Data.self)
+            selectedPhotoData = try await selectedPhoto?.loadTransferable(type: Data.self)
         }
     }
 }
