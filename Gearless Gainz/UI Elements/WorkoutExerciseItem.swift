@@ -16,9 +16,8 @@ struct WorkoutExerciseItem: View {
     
     var body: some View {
         GroupBox{
-            
             HStack(spacing: 16){
-                ExerciseListItem(exercise: entry.exercise!, showInfoButton: false)
+                ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
                 Menu("", systemImage: "ellipsis", content: {
                     Button("Reorder Exercises", systemImage: "arrow.up.arrow.down"){
                         

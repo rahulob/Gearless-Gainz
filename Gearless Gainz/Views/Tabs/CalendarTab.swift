@@ -86,7 +86,7 @@ struct CalendarTab: View {
             
             Spacer()
             ForEach(workoutExercises){ entry in
-                Text(entry.exercise!.name)
+                Text(entry.exercise.name)
             }
         }
         .padding()

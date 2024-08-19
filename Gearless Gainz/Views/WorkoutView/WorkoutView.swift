@@ -54,7 +54,7 @@ struct WorkoutView: View {
                 }
                 .listStyle(.plain)
                 .overlay{
-                    if workout.exercises.isEmpty{
+                    if filteredExercises.isEmpty{
                         EmptyExercisesView()
                     }
                 }

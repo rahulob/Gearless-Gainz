@@ -50,6 +50,7 @@ struct EditExerciseView: View {
                             if selectedPhotoData != nil {
                                 Button("Remove Photo", systemImage: "trash"){
                                     selectedPhoto = nil
+                                    selectedPhotoData = nil
                                 }
                                 .foregroundStyle(Color.red)
                             }

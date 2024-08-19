@@ -10,7 +10,7 @@ import SwiftUI
 struct ExerciseImage: View {
     var photoData: Data?
     var imageSize: CGFloat? = 48
-    var iconSize: CGFloat?
+    var iconSize: CGFloat = 24
     
     var body: some View {
         if let imageData = photoData, let uiImage = UIImage(data: imageData){
@@ -22,7 +22,7 @@ struct ExerciseImage: View {
         }
         else{
             Image(systemName: "dumbbell")
-                .font(.system(size: iconSize ?? 24))
+                .font(.system(size: iconSize))
                 .rotationEffect(.degrees(45))
                 .scaledToFill()
                 .frame(width: imageSize, height: imageSize)
