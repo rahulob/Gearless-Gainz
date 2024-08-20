@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct WorkoutEntryItem: View {
-    @Environment(\.modelContext) var modelContext
+    @Environment(\.modelContext) private var modelContext
     @State private var showDeleteAlert: Bool = false
     
     var entry: WorkoutEntry
@@ -68,6 +68,7 @@ struct WorkoutEntryItem: View {
 }
 
 private struct SetRow: View {
+    @Environment(\.modelContext) private var modelContext
     @FocusState private var focusedField: Field?
     private enum Field: Int, CaseIterable {
         case weight, reps
@@ -78,26 +79,28 @@ private struct SetRow: View {
     
     @State private var weight: Double? = nil
     @State private var reps: Int? = nil
+    @State private var setType: ExerciseSetType = .working
     
     var body: some View {
         HStack{
             Group{
                 Menu(content: {
                     Text("Change to")
-                    Button("Warm Up Set"){ exerciseSet.setType = .warmup }
-                    Button("Working Set"){ exerciseSet.setType = .working }
-                    Button("Drop Set"){ exerciseSet.setType = .dropSet }
-                }, label: {
-                    Group{
-                        Image(systemName: exerciseSet.setType.displayIcon)
-                            .frame(width: 32, height: 32)
-                            .background(RoundedRectangle(cornerRadius: 8).fill(.accent))
-                        
-                        Text(exerciseSet.setType.displayName)
-                            .fontWeight(.semibold)
-                            .font(.caption)
+                    Button("Warm Up Set", systemImage: ExerciseSetType.warmup.displayIcon){ exerciseSet.setType = .warmup }
+                    Button("Working Set", systemImage: ExerciseSetType.working.displayIcon){ exerciseSet.setType = .working }
+                    Button("Drop Set", systemImage: ExerciseSetType.dropSet.displayIcon){ exerciseSet.setType = .dropSet }
+                    
+                    Button("Delete Set", systemImage: "trash", role: .destructive){ modelContext.delete(exerciseSet)
                     }
-                    .frame(maxWidth: .infinity)
+                }, label: {
+                    Image(systemName: exerciseSet.setType.displayIcon)
+                        .frame(width: 32, height: 32)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.8)))
+                    
+                    Text(exerciseSet.setType.displayName)
+                        .fontWeight(.semibold)
+                        .font(.caption2)
+                        .frame(maxWidth: .infinity)
                 })
                 .buttonStyle(PlainButtonStyle())
                 
@@ -109,11 +112,12 @@ private struct SetRow: View {
                             if focusedField == .weight {
                                 ToolbarItem(placement: .keyboard) {
                                     HStack{
-                                        Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
-                                        Spacer()
                                         Button(action: { weight = (weight ?? 0) * -1 }, label: { Image(systemName: "plusminus") })
-                                        Button(action: { weight = (weight ?? 0) + 0.5 }, label: { Image(systemName: "plus") })
+                                        Spacer()
                                         Button(action: { weight = (weight ?? 0) - 0.5 }, label: { Image(systemName: "minus") })
+                                        Button(action: { weight = (weight ?? 0) + 0.5 }, label: { Image(systemName: "plus") })
+                                        Spacer()
+                                        Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
                                     }
                                 }
                             }
@@ -128,14 +132,15 @@ private struct SetRow: View {
                             if focusedField == .reps {
                                 ToolbarItem(placement: .keyboard) {
                                     HStack{
-                                        Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
                                         Spacer()
-                                        Button(action: { reps = (reps ?? 0) + 1 }, label: { Image(systemName: "plus") })
                                         Button(action: {
-                                            if reps != 0{
+                                            if reps != 0 {
                                                 reps = (reps ?? 0) - 1
                                             }
                                         }, label: { Image(systemName: "minus") })
+                                        Button(action: { reps = (reps ?? 0) + 1 }, label: { Image(systemName: "plus") })
+                                        Spacer()
+                                        Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
                                     }
                                 }
                             }

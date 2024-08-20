@@ -66,7 +66,8 @@ struct ExercisePickerView: View {
                             let count = workout.entries.count
                             for (index, exercise) in selectedExercises.enumerated() {
                                 let workoutEntry = WorkoutEntry(exercise: exercise, order: count+index, workout: workout)
-                                modelContext.insert(workoutEntry)
+                                let firstSet = ExerciseSet(weight: 0, reps: 0, workoutEntry: workoutEntry, order: 0)
+                                modelContext.insert(firstSet)
                             }
                         }
                     }, label: {

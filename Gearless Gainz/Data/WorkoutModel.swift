@@ -50,11 +50,11 @@ final class ExerciseSet: Identifiable{
     var weight: Double
     var reps: Int
     var order: Int
-    var setType: exerciseSetType
+    var setType: ExerciseSetType
     var id: UUID
     var workoutEntry: WorkoutEntry?
     
-    init(id: UUID = UUID(), weight: Double, reps: Int, setType: exerciseSetType = .working, workoutEntry: WorkoutEntry? = nil, order: Int) {
+    init(id: UUID = UUID(), weight: Double, reps: Int, setType: ExerciseSetType = .working, workoutEntry: WorkoutEntry? = nil, order: Int) {
         self.id = id
         self.weight = weight
         self.reps = reps
@@ -65,7 +65,7 @@ final class ExerciseSet: Identifiable{
 }
 
 // enum for the type of set
-enum exerciseSetType: String, Codable, CaseIterable {
+enum ExerciseSetType: String, Codable, CaseIterable {
     case warmup
     case working
     case dropSet
@@ -81,8 +81,8 @@ enum exerciseSetType: String, Codable, CaseIterable {
     
     var displayName: String {
         switch self {
-        case .warmup: return "Warm Up"
-        case .dropSet: return "Drop Set"
+        case .warmup: return "Warmup"
+        case .dropSet: return "Dropset"
         case .working: return "Working"
         }
     }
