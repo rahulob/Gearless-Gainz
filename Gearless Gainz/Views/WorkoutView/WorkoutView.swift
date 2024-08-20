@@ -43,8 +43,10 @@ struct WorkoutView: View {
                         WorkoutEntryItem(entry: entry)
                     }
                     .onDelete(perform: { indexSet in
-                        for index in indexSet{
-                            modelContext.delete(filteredExercises[index])
+                        withAnimation{
+                            for index in indexSet{
+                                modelContext.delete(filteredExercises[index])
+                            }
                             ensureExercisesHaveOrder()
                         }
                     })
@@ -98,7 +100,6 @@ struct WorkoutView: View {
                 exercise.order = index
             }
         }
-        try? modelContext.save()
     }
 }
 

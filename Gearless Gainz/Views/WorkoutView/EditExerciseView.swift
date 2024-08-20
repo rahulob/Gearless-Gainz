@@ -146,7 +146,7 @@ struct EditExerciseView: View {
                             exercise.youtubeURL = exerciseURL
                             exercise.targetMuscle = targetMuscle
                             if isNewExercise{
-                                modelContext.insert(exercise)
+                                withAnimation { modelContext.insert(exercise) }
                             }
                         }
                     }){

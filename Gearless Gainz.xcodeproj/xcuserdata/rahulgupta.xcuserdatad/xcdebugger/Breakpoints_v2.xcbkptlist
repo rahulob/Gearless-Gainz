@@ -24,7 +24,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "43E0ED67-C060-4CA3-A1DB-4BDD44D214CF"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../var/folders/lk/gqjd8mrs3szdx65pjptpwvqc0000gn/T/swift-generated-sources/@__swiftmacro_14Gearless_Gainz12WorkoutEntryC8exercise18_PersistedPropertyfMa_.swift"
@@ -32,6 +32,22 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1"
             endingLineNumber = "1"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FA6CDA36-B231-4E6E-A7AE-6081825985E9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../var/folders/lk/gqjd8mrs3szdx65pjptpwvqc0000gn/T/swift-generated-sources/@__swiftmacro_14Gearless_Gainz12WorkoutEntryC8exercise18_PersistedPropertyfMa_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2"
+            endingLineNumber = "2"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>

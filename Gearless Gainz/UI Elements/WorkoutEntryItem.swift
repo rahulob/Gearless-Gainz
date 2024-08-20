@@ -27,7 +27,6 @@ struct WorkoutEntryItem: View {
             VStack(spacing: 16){
                 HStack{
                     Group{
-                        Text("Set")
                         Text("Type")
                         Label("kg", systemImage: "scalemass.fill")
                         Text("Reps")
@@ -40,25 +39,30 @@ struct WorkoutEntryItem: View {
                     SetRow(
                         exerciseSet: exerciseSet,
                         onDelete: {
-                            modelContext.delete(exerciseSet)
-                            for (index, sortedSet) in sortedSets.enumerated() {
-                                if sortedSet.order != index {
-                                    sortedSet.order = index
+                            withAnimation{
+                                modelContext.delete(exerciseSet)
+                                for (index, sortedSet) in sortedSets.enumerated() {
+                                    if sortedSet.order != index {
+                                        sortedSet.order = index
+                                    }
                                 }
                             }
                         })
                 }
             }
             
+            // Add new set to the workout entry
             Button(
                 action: {
-                    entry.sets.append(ExerciseSet(weight: 0, reps: 0, workoutEntry: entry, order: entry.sets.count))
+                    withAnimation{
+                        entry.sets.append(ExerciseSet(weight: 0, reps: 0, workoutEntry: entry, order: entry.sets.count))
+                    }
                 }, label: {
                     Label("Add set", systemImage: "plus")
                         .frame(maxWidth: .infinity)
                 }
             )
-            .buttonStyle(BorderedProminentButtonStyle())
+            .buttonStyle(BorderedButtonStyle())
         }
     }
 }
@@ -78,20 +82,24 @@ private struct SetRow: View {
     var body: some View {
         HStack{
             Group{
-                Menu("\(exerciseSet.order + 1)"){
-                    Button(
-                        exerciseSet.isWarmup ? "Mark as Working set" : "Mark as Warm Up",
-                        systemImage: exerciseSet.isWarmup ? "figure.strengthtraining.traditional" : "figure.cooldown",
-                        action: { exerciseSet.isWarmup.toggle() }
-                    )
-                    Button("Delete Set", systemImage: "xmark", action: onDelete)
-                        .tint(.red)
-                }
-                .buttonStyle(BorderedButtonStyle())
-                
-                Text(exerciseSet.isWarmup ? "Warm up" : "Working")
-                    .font(.caption)
-                    .fontWeight(.regular)
+                Menu(content: {
+                    Text("Change to")
+                    Button("Warm Up Set"){ exerciseSet.setType = .warmup }
+                    Button("Working Set"){ exerciseSet.setType = .working }
+                    Button("Drop Set"){ exerciseSet.setType = .dropSet }
+                }, label: {
+                    Group{
+                        Image(systemName: exerciseSet.setType.displayIcon)
+                            .frame(width: 32, height: 32)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(.accent))
+                        
+                        Text(exerciseSet.setType.displayName)
+                            .fontWeight(.semibold)
+                            .font(.caption)
+                    }
+                    .frame(maxWidth: .infinity)
+                })
+                .buttonStyle(PlainButtonStyle())
                 
                 VStack{
                     TextField(String(exerciseSet.weight), value: $weight, format: .number)

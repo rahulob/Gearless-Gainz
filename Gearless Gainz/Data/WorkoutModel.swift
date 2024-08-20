@@ -8,27 +8,6 @@
 import Foundation
 import SwiftData
 
-// enum for the target muscles of the exercises
-enum TargetMuscle: String, Codable, CaseIterable {
-    case back
-    case chest
-    case legs
-    case shoulders
-    case biceps
-    case triceps
-    case forearms
-    case glutes
-    case calves
-    case core
-    case fullBody
-    // Add more muscle groups as needed
-    var displayName: String {
-            switch self {
-            case .fullBody: return "Full Body"
-            default: return rawValue.capitalized
-            }
-        }
-}
 // Main workout model
 // Ideally one person will create one workout for each day
 @Model
@@ -71,16 +50,40 @@ final class ExerciseSet: Identifiable{
     var weight: Double
     var reps: Int
     var order: Int
-    var isWarmup: Bool
+    var setType: exerciseSetType
     var id: UUID
     var workoutEntry: WorkoutEntry?
     
-    init(id: UUID = UUID(), weight: Double, reps: Int, isWarmup: Bool = false, workoutEntry: WorkoutEntry? = nil, order: Int) {
+    init(id: UUID = UUID(), weight: Double, reps: Int, setType: exerciseSetType = .working, workoutEntry: WorkoutEntry? = nil, order: Int) {
         self.id = id
         self.weight = weight
         self.reps = reps
-        self.isWarmup = isWarmup
+        self.setType = setType
         self.order = order
         self.workoutEntry = workoutEntry
+    }
+}
+
+// enum for the type of set
+enum exerciseSetType: String, Codable, CaseIterable {
+    case warmup
+    case working
+    case dropSet
+
+    // Add more muscle groups as needed
+    var displayIcon: String {
+        switch self {
+        case .warmup: return "flame.fill"
+        case .dropSet: return "drop.fill"
+        case .working: return "figure.strengthtraining.traditional"
+        }
+    }
+    
+    var displayName: String {
+        switch self {
+        case .warmup: return "Warm Up"
+        case .dropSet: return "Drop Set"
+        case .working: return "Working"
+        }
     }
 }
