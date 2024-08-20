@@ -9,12 +9,15 @@ import SwiftUI
 import SwiftData
 
 struct SettingsTab: View {
-    @Query var workouts: [Workout]
+    @Query var exerciseSets: [ExerciseSet]
+    @Query var workoutEntrys: [WorkoutEntry]
     @State var isWeightInKG = true
     var body: some View {
         NavigationStack{
             List{
                 Toggle("Weight Units in Kg", isOn: $isWeightInKG)
+                Text("Sets Count: \(exerciseSets.count)")
+                Text("Entry Count: \(workoutEntrys.count)")
             }
             .navigationTitle("App Settings")
         }

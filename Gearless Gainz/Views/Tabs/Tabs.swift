@@ -27,5 +27,5 @@ struct Tabs: View {
 
 #Preview {
     Tabs()
-        .modelContainer(for: Workout.self, inMemory: true)
+        .modelContainer(for: [Workout.self], inMemory: true)
 }

@@ -13,7 +13,7 @@ struct EditExerciseView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query private var allExercises: [Exercise]
-    @Query private var workoutExercises: [WorkoutEntry]
+    @Query private var workoutEntries: [WorkoutEntry]
     
     @Binding var exercise: Exercise
     var isNewExercise: Bool
@@ -111,13 +111,15 @@ struct EditExerciseView: View {
                                 title: Text("Are you sure?"),
                                 message: Text("\"\(exercise.name)\" \n will be deleted from everywhere"),
                                 primaryButton: .destructive(Text("Delete"),action: {
-                                    modelContext.delete(exercise)
-                                    for workoutExercise in workoutExercises {
-                                        if workoutExercise.exercise == exercise {
-                                            modelContext.delete(workoutExercise)
-                                        }
-                                    }
                                     dismiss()
+                                    withAnimation{
+                                        for entry in workoutEntries {
+                                            if entry.exercise == exercise {
+                                                modelContext.delete(entry)
+                                            }
+                                        }
+                                        modelContext.delete(exercise)
+                                    }
                                 }),
                                 secondaryButton: .cancel()
                             )

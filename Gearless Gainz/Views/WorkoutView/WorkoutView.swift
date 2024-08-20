@@ -14,9 +14,9 @@ struct WorkoutView: View {
     
     // Fetch exercises for current workout
     @Query(sort: \WorkoutEntry.order)
-    private var sortedExercises: [WorkoutEntry]
+    private var sortedEntries: [WorkoutEntry]
     private var filteredExercises: [WorkoutEntry] {
-            sortedExercises.filter { $0.workout == workout }
+            sortedEntries.filter { $0.workout == workout }
         }
     // show alert toggle for deleting the workout
     @State private var deleteAlert = false
@@ -42,12 +42,20 @@ struct WorkoutView: View {
                     ForEach(filteredExercises){entry in
                         WorkoutEntryItem(entry: entry)
                     }
+                    .onDelete(perform: { indexSet in
+                        for index in indexSet{
+                            modelContext.delete(filteredExercises[index])
+                            ensureExercisesHaveOrder()
+                        }
+                    })
                     .onMove(perform: { indices, newOffset in
-                        var exercises = filteredExercises
-                        exercises.move(fromOffsets: indices, toOffset: newOffset)
-                        
-                        for (index, exercise) in exercises.enumerated() {
-                            exercise.order = index
+                        withAnimation{
+                            var exercises = filteredExercises
+                            exercises.move(fromOffsets: indices, toOffset: newOffset)
+                            
+                            for (index, exercise) in exercises.enumerated() {
+                                exercise.order = index
+                            }
                         }
                     })
                     .listRowSeparator(.hidden)

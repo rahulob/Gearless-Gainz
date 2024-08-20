@@ -14,6 +14,6 @@ struct MainApp: App {
         WindowGroup {
             Tabs()
         }
-        .modelContainer(for: [Workout.self, Exercise.self], inMemory: true)
+        .modelContainer(for: [Workout.self], inMemory: true)
     }
 }

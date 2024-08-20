@@ -52,6 +52,7 @@ struct LogTab: View {
                 }
             }
             .navigationTitle("Log Workout")
+            .toolbarTitleDisplayMode(.inline)
         }
     }
 }

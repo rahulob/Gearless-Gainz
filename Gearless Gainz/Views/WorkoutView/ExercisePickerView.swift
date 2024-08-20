@@ -61,13 +61,14 @@ struct ExercisePickerView: View {
                     .buttonStyle(.borderedProminent)
                     
                     Button(action: {
-                        let count = workout.exercises.count
-                        for (index, exercise) in selectedExercises.enumerated() {
-                            let workoutExercise = WorkoutEntry(exercise: exercise, order: count+index, workout: workout)
-//                            exercise.history.append(workoutExercise)
-                            modelContext.insert(workoutExercise)
-                        }
                         dismiss()
+                        withAnimation{
+                            let count = workout.entries.count
+                            for (index, exercise) in selectedExercises.enumerated() {
+                                let workoutEntry = WorkoutEntry(exercise: exercise, order: count+index, workout: workout)
+                                modelContext.insert(workoutEntry)
+                            }
+                        }
                     }, label: {
                         Label("Add \(selectedExercises.count)", systemImage: "checkmark")
                             .frame(maxWidth: .infinity)

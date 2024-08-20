@@ -38,7 +38,7 @@ final class Workout: Identifiable{
     var name: String?
     
     @Relationship(deleteRule: .cascade)
-    var exercises = [WorkoutEntry]()
+    var entries = [WorkoutEntry]()
     
     init(id: UUID = UUID(), date: Date, name: String? = nil) {
         self.id = id
@@ -51,6 +51,7 @@ final class Workout: Identifiable{
 @Model
 final class WorkoutEntry: Identifiable {
     var id: UUID
+    @Relationship(deleteRule: .cascade)
     var sets: [ExerciseSet]
     var order: Int
     var workout: Workout?
@@ -67,15 +68,19 @@ final class WorkoutEntry: Identifiable {
 
 @Model
 final class ExerciseSet: Identifiable{
-    var weight: Float32
+    var weight: Double
     var reps: Int
+    var order: Int
     var isWarmup: Bool
     var id: UUID
+    var workoutEntry: WorkoutEntry?
     
-    init(id: UUID = UUID(),weight: Float32, reps: Int, isWarmup: Bool = false) {
+    init(id: UUID = UUID(), weight: Double, reps: Int, isWarmup: Bool = false, workoutEntry: WorkoutEntry? = nil, order: Int) {
         self.id = id
         self.weight = weight
         self.reps = reps
         self.isWarmup = isWarmup
+        self.order = order
+        self.workoutEntry = workoutEntry
     }
 }

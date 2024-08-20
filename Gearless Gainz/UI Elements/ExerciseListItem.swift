@@ -14,34 +14,20 @@ struct ExerciseListItem: View {
     var body: some View {
         HStack(spacing: 16){
             ExerciseImage(photoData: exercise.photo)
-            if showInfoButton{
-                ExerciseName(name: exercise.name, targetMuscle: exercise.targetMuscle.displayName)
+            VStack(alignment: .leading){
+                Text(exercise.name)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                
+                Text(exercise.targetMuscle.displayName)
+                    .font(.caption)
             }
+            Spacer()
             NavigationLink(destination: EditExerciseView(exercise: $exercise, isNewExercise: false)){
-                if showInfoButton{
-                    Image(systemName: "info.circle.fill")
-                } else {
-                    ExerciseName(name: exercise.name, targetMuscle: exercise.targetMuscle.displayName)
-                }
+                Image(systemName: "info.circle.fill")
             }
         }
-    }
-}
-
-private struct ExerciseName: View {
-    var name: String
-    var targetMuscle: String
-    var body: some View {
-        VStack(alignment: .leading){
-            Text(name)
-                .font(.title3)
-                .fontWeight(.bold)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-            
-            Text(targetMuscle)
-                .font(.caption)
-        }
-        Spacer()
     }
 }
