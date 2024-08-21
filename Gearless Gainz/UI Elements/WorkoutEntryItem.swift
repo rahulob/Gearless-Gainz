@@ -47,7 +47,8 @@ struct WorkoutEntryItem: View {
                                     }
                                 }
                             }
-                        })
+                        }
+                    )
                 }
             }
             
@@ -55,7 +56,18 @@ struct WorkoutEntryItem: View {
             Button(
                 action: {
                     withAnimation{
-                        entry.sets.append(ExerciseSet(weight: 0, reps: 0, workoutEntry: entry, order: entry.sets.count))
+                        var weight: Double = 0
+                        var reps: Int = 0
+                        if entry.sets.count == 0 {
+                            // TODO: Take the value from the previous first set of same exercise
+                        } else {
+                            let index = entry.sets.firstIndex(where: { $0.order == entry.sets.count-1 })
+                            if index != nil {
+                                weight = entry.sets[index!].weight
+                                reps = entry.sets[index!].reps
+                            }
+                        }
+                        entry.sets.append(ExerciseSet(weight: weight, reps: reps, workoutEntry: entry, order: entry.sets.count))
                     }
                 }, label: {
                     Label("Add set", systemImage: "plus")

@@ -30,6 +30,7 @@ struct ExercisePickerView: View {
                     (searchString.isEmpty || exercise.name.localizedCaseInsensitiveContains(searchString))
                 }
             }
+            .sorted(by: { $0.targetMuscle.displayName < $1.targetMuscle.displayName })
         }
     
     var body: some View {
@@ -159,14 +160,18 @@ private struct EmptyListView: View {
     
     var body: some View {
         VStack(spacing: 16){
-            Text("It seems no exercises are present in the database")
+            Text("It seems no exercises are present in the database \n Press the button below to load predefined exercises by the developer")
                 .multilineTextAlignment(.center)
                 .font(.caption)
             //Load default Exercises
             Button(action: loadDefaultExercises){
-                Label("Load Default Exercises", systemImage: "arrow.2.circlepath")
-                    .frame(maxWidth: .infinity)
-            }.buttonStyle(.borderedProminent)
+                Label("Load Exercises", systemImage: "arrow.2.circlepath")
+                    .padding(.horizontal)
+                    .padding(8)
+                    .font(.system(size: 18))
+                    .fontWeight(.bold)
+            }
+            .buttonStyle(.borderedProminent)
         }
         .padding(32)
     }

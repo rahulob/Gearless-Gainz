@@ -30,20 +30,18 @@ final class Exercise: Identifiable{
 // enum for the target muscles of the exercises
 enum TargetMuscle: String, Codable, CaseIterable {
     case back
+    case biceps
     case chest
+    case forearms
     case legs
     case shoulders
-    case biceps
     case triceps
-    case forearms
-    case glutes
     case calves
     case core
-    case fullBody
+    case other
     // Add more muscle groups as needed
     var displayName: String {
             switch self {
-            case .fullBody: return "Full Body"
             default: return rawValue.capitalized
             }
         }
