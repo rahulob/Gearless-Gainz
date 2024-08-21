@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D50378542C6C964E00D83CCB /* DefaultExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50378532C6C964E00D83CCB /* DefaultExercises.swift */; };
+		D53DF6B12C75DE400094AC2A /* ExerciseHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53DF6B02C75DE400094AC2A /* ExerciseHistoryView.swift */; };
 		D53FA5812C734293004D1170 /* SettingsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53FA5802C734293004D1170 /* SettingsTab.swift */; };
 		D5A531142C71AD910071E647 /* ExerciseImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A531132C71AD910071E647 /* ExerciseImage.swift */; };
 		D5A531162C71B0870071E647 /* ExerciseListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A531152C71B0870071E647 /* ExerciseListItem.swift */; };
@@ -27,6 +28,7 @@
 
 /* Begin PBXFileReference section */
 		D50378532C6C964E00D83CCB /* DefaultExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExercises.swift; sourceTree = "<group>"; };
+		D53DF6B02C75DE400094AC2A /* ExerciseHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseHistoryView.swift; sourceTree = "<group>"; };
 		D53FA5802C734293004D1170 /* SettingsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTab.swift; sourceTree = "<group>"; };
 		D5A531132C71AD910071E647 /* ExerciseImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseImage.swift; sourceTree = "<group>"; };
 		D5A531152C71B0870071E647 /* ExerciseListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseListItem.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 				D5E641352C6B6CB3008397A4 /* WorkoutView.swift */,
 				D5E6413A2C6B7D0D008397A4 /* ExercisePickerView.swift */,
 				D5E6413C2C6B7DCB008397A4 /* EditExerciseView.swift */,
+				D53DF6B02C75DE400094AC2A /* ExerciseHistoryView.swift */,
 			);
 			path = WorkoutView;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 				D5A531162C71B0870071E647 /* ExerciseListItem.swift in Sources */,
 				D53FA5812C734293004D1170 /* SettingsTab.swift in Sources */,
 				D5E641312C6B6B3D008397A4 /* LogTab.swift in Sources */,
+				D53DF6B12C75DE400094AC2A /* ExerciseHistoryView.swift in Sources */,
 				D5E6413B2C6B7D0D008397A4 /* ExercisePickerView.swift in Sources */,
 				D5A531182C71F5940071E647 /* ExerciseModel.swift in Sources */,
 				D5E641362C6B6CB3008397A4 /* WorkoutView.swift in Sources */,

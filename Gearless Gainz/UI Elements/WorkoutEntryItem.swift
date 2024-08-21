@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct WorkoutEntryItem: View {
+    @AppStorage("isWeightInKG") private var isWeightInKG = true
     @Environment(\.modelContext) private var modelContext
     @State private var showDeleteAlert: Bool = false
     
@@ -28,7 +29,7 @@ struct WorkoutEntryItem: View {
                 HStack{
                     Group{
                         Text("Type")
-                        Label("kg", systemImage: "scalemass.fill")
+                        Label(isWeightInKG ? "KG" : "LB", systemImage: "scalemass.fill")
                         Text("Reps")
                     }
                     .frame(maxWidth: .infinity)
@@ -82,6 +83,9 @@ struct WorkoutEntryItem: View {
 
 private struct SetRow: View {
     @Environment(\.modelContext) private var modelContext
+    @AppStorage("incrementWeight") var incrementWeight = 2.5
+    @AppStorage("isWeightInKG") private var isWeightInKG = true
+    
     @FocusState private var focusedField: Field?
     private enum Field: Int, CaseIterable {
         case weight, reps
@@ -118,20 +122,20 @@ private struct SetRow: View {
             })
             .buttonStyle(PlainButtonStyle())
             
-            TextField(String(exerciseSet.weight), value: $weight, format: .number)
+            TextField(String(exerciseSet.weight * (isWeightInKG ? 1 : 2.2)), value: $weight, format: .number)
                 .keyboardType(.decimalPad)
                 .focused($focusedField, equals: .weight)
                 .toolbar{
                     if focusedField == .weight {
                         ToolbarItem(placement: .keyboard) {
                             HStack{
-                                Button(action: { weight = (weight ?? 0) * -1 }, label: { Image(systemName: "plusminus") })
+                                Button(action: { exerciseSet.weight *= -1 }, label: { Image(systemName: "plusminus") })
                                 Spacer()
-                                Button(action: { exerciseSet.weight -= 0.5 }, label: { Image(systemName: "minus") })
-                                Button(action: { exerciseSet.weight += 0.5 }, label: { Image(systemName: "plus") })
+                                Button(action: { exerciseSet.weight -= incrementWeight }, label: { Image(systemName: "minus") })
+                                Button(action: { exerciseSet.weight += incrementWeight }, label: { Image(systemName: "plus") })
                                 Spacer()
                                 Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
-                            }
+                            }.font(.body)
                         }
                     }
                 }
@@ -146,13 +150,13 @@ private struct SetRow: View {
                                 Spacer()
                                 Button(action: {
                                     if exerciseSet.reps != 0 {
-                                        exerciseSet.reps = 1
+                                        exerciseSet.reps -= 1
                                     }
                                 }, label: { Image(systemName: "minus") })
                                 Button(action: { exerciseSet.reps += 1 }, label: { Image(systemName: "plus") })
                                 Spacer()
                                 Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
-                            }
+                            }.font(.body)
                         }
                     }
                 }
@@ -160,7 +164,11 @@ private struct SetRow: View {
         .font(.title3)
         .fontWeight(.bold)
         .multilineTextAlignment(.center)
-        .onChange(of: weight, { if weight != nil {exerciseSet.weight = weight!} })
+        .onChange(of: weight, {
+            if weight != nil {
+                exerciseSet.weight = weight! / (isWeightInKG ? 1 : 2.2)
+            }
+        })
         .onChange(of: reps, { if reps != nil {exerciseSet.reps = reps!} })
         .onChange(of: focusedField, {
             if focusedField == nil {

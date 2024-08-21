@@ -9,15 +9,67 @@ import SwiftUI
 import SwiftData
 
 struct SettingsTab: View {
-    @Query var exerciseSets: [ExerciseSet]
-    @Query var workoutEntrys: [WorkoutEntry]
-    @State var isWeightInKG = true
+    @AppStorage("isWeightInKG") private var isWeightInKG = true
+    @AppStorage("incrementWeight") private var incrementWeight = 2.5
+
+    @State private var incrementWeightState: Double?
+    @FocusState private var isFocused: Bool
     var body: some View {
         NavigationStack{
             List{
-                Toggle("Weight Units in Kg", isOn: $isWeightInKG)
-                Text("Sets Count: \(exerciseSets.count)")
-                Text("Entry Count: \(workoutEntrys.count)")
+                Section("Weight settings"){
+                    // Weight units
+                    HStack(spacing: 32) {
+                        Text("Weight Units")
+                        Picker("", selection: $isWeightInKG, content: {
+                            Text("KG").tag(true)
+                            Text("LB").tag(false)
+                        })
+                        .pickerStyle(.segmented)
+                        
+                    }
+                    // Increment weight
+                    HStack{
+                        Text("Increment weight")
+                        Spacer()
+                        TextField(
+                            String(incrementWeight * (isWeightInKG ? 1: 2.2)),
+                            value: $incrementWeightState,
+                            format: .number
+                        )
+                        .focused($isFocused)
+                        .keyboardType(.decimalPad)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.trailing)
+                        .onChange(of: incrementWeightState, {
+                            if incrementWeightState != nil {
+                                let m = isWeightInKG ? 1: 2.2
+                                incrementWeight = incrementWeightState! / m
+                            }
+                        })
+                        .onChange(of: isWeightInKG, {
+                            if incrementWeightState != nil {
+                                let m = isWeightInKG ? 1: 2.2
+                                incrementWeightState = incrementWeight * m
+                            }
+                        })
+                        .toolbar {
+                            if isFocused {
+                                ToolbarItem(placement: .keyboard) {
+                                    Button("Done", systemImage: "keyboard.chevron.compact.down"){
+                                        isFocused = false
+                                        incrementWeightState = nil
+                                    }
+                                }
+                            }
+                        }
+                        Text(isWeightInKG ? "KG" : "LB")
+                            .font(.caption)
+                    }
+                }
+                
+                // Delete Entire data present in the app
             }
             .navigationTitle("App Settings")
         }
