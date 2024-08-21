@@ -74,16 +74,16 @@ enum ExerciseSetType: String, Codable, CaseIterable {
     var displayIcon: String {
         switch self {
         case .warmup: return "flame.fill"
-        case .dropSet: return "drop.fill"
+        case .dropSet: return "arrow.turn.down.right"
         case .working: return "figure.strengthtraining.traditional"
         }
     }
     
     var displayName: String {
         switch self {
-        case .warmup: return "Warmup"
-        case .dropSet: return "Dropset"
-        case .working: return "Working"
+        case .warmup: return "Warm\nUp"
+        case .dropSet: return "Drop\nSet"
+        case .working: return "Work\nSet"
         }
     }
 }

@@ -51,6 +51,7 @@ struct WorkoutEntryItem: View {
                     )
                 }
             }
+            .padding(.leading)
             
             // Add new set to the workout entry
             Button(
@@ -95,16 +96,16 @@ private struct SetRow: View {
     
     var body: some View {
         HStack{
-            Group{
-                Menu(content: {
-                    Text("Change to")
-                    Button("Warm Up Set", systemImage: ExerciseSetType.warmup.displayIcon){ exerciseSet.setType = .warmup }
-                    Button("Working Set", systemImage: ExerciseSetType.working.displayIcon){ exerciseSet.setType = .working }
-                    Button("Drop Set", systemImage: ExerciseSetType.dropSet.displayIcon){ exerciseSet.setType = .dropSet }
-                    
-                    Button("Delete Set", systemImage: "trash", role: .destructive){ modelContext.delete(exerciseSet)
-                    }
-                }, label: {
+            Menu(content: {
+                Text("Change to")
+                Button("Warm Up Set", systemImage: ExerciseSetType.warmup.displayIcon){ exerciseSet.setType = .warmup }
+                Button("Working Set", systemImage: ExerciseSetType.working.displayIcon){ exerciseSet.setType = .working }
+                Button("Drop Set", systemImage: ExerciseSetType.dropSet.displayIcon){ exerciseSet.setType = .dropSet }
+                
+                Button("Delete Set", systemImage: "trash", role: .destructive){ modelContext.delete(exerciseSet)
+                }
+            }, label: {
+
                     Image(systemName: exerciseSet.setType.displayIcon)
                         .frame(width: 32, height: 32)
                         .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.8)))
@@ -113,58 +114,59 @@ private struct SetRow: View {
                         .fontWeight(.semibold)
                         .font(.caption2)
                         .frame(maxWidth: .infinity)
-                })
-                .buttonStyle(PlainButtonStyle())
-                
-                VStack{
-                    TextField(String(exerciseSet.weight), value: $weight, format: .number)
-                        .keyboardType(.decimalPad)
-                        .focused($focusedField, equals: .weight)
-                        .toolbar{
-                            if focusedField == .weight {
-                                ToolbarItem(placement: .keyboard) {
-                                    HStack{
-                                        Button(action: { weight = (weight ?? 0) * -1 }, label: { Image(systemName: "plusminus") })
-                                        Spacer()
-                                        Button(action: { weight = (weight ?? 0) - 0.5 }, label: { Image(systemName: "minus") })
-                                        Button(action: { weight = (weight ?? 0) + 0.5 }, label: { Image(systemName: "plus") })
-                                        Spacer()
-                                        Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
-                                    }
-                                }
+
+            })
+            .buttonStyle(PlainButtonStyle())
+            
+            TextField(String(exerciseSet.weight), value: $weight, format: .number)
+                .keyboardType(.decimalPad)
+                .focused($focusedField, equals: .weight)
+                .toolbar{
+                    if focusedField == .weight {
+                        ToolbarItem(placement: .keyboard) {
+                            HStack{
+                                Button(action: { weight = (weight ?? 0) * -1 }, label: { Image(systemName: "plusminus") })
+                                Spacer()
+                                Button(action: { exerciseSet.weight -= 0.5 }, label: { Image(systemName: "minus") })
+                                Button(action: { exerciseSet.weight += 0.5 }, label: { Image(systemName: "plus") })
+                                Spacer()
+                                Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
                             }
                         }
+                    }
                 }
-                
-                VStack{
-                    TextField("\(exerciseSet.reps)", value: $reps, format: .number)
-                        .keyboardType(.numberPad)
-                        .focused($focusedField, equals: .reps)
-                        .toolbar{
-                            if focusedField == .reps {
-                                ToolbarItem(placement: .keyboard) {
-                                    HStack{
-                                        Spacer()
-                                        Button(action: {
-                                            if reps != 0 {
-                                                reps = (reps ?? 0) - 1
-                                            }
-                                        }, label: { Image(systemName: "minus") })
-                                        Button(action: { reps = (reps ?? 0) + 1 }, label: { Image(systemName: "plus") })
-                                        Spacer()
-                                        Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
+            
+            TextField("\(exerciseSet.reps)", value: $reps, format: .number)
+                .keyboardType(.numberPad)
+                .focused($focusedField, equals: .reps)
+                .toolbar{
+                    if focusedField == .reps {
+                        ToolbarItem(placement: .keyboard) {
+                            HStack{
+                                Spacer()
+                                Button(action: {
+                                    if exerciseSet.reps != 0 {
+                                        exerciseSet.reps = 1
                                     }
-                                }
+                                }, label: { Image(systemName: "minus") })
+                                Button(action: { exerciseSet.reps += 1 }, label: { Image(systemName: "plus") })
+                                Spacer()
+                                Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
                             }
                         }
+                    }
                 }
-            }
-            .frame(maxWidth: .infinity)
         }
         .font(.title3)
         .fontWeight(.bold)
         .multilineTextAlignment(.center)
-        .onChange(of: weight, {exerciseSet.weight = weight ?? 0})
-        .onChange(of: reps, {exerciseSet.reps = reps ?? 0})
+        .onChange(of: weight, { if weight != nil {exerciseSet.weight = weight!} })
+        .onChange(of: reps, { if reps != nil {exerciseSet.reps = reps!} })
+        .onChange(of: focusedField, {
+            if focusedField == nil {
+                weight = nil
+                reps = nil
+            }
+        })
     }
 }
