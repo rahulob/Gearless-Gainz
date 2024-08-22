@@ -24,7 +24,7 @@ struct WorkoutEntryItem: View {
     }
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 16) {
             HStack{
                 ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
                 Button(action: { showHistorySheet.toggle() }){
@@ -49,7 +49,6 @@ struct WorkoutEntryItem: View {
                 }
                 .frame(maxWidth: .infinity)
             }
-            .padding(.vertical, 4)
             .font(.caption)
             .fontWeight(.bold)
             
@@ -130,6 +129,7 @@ private struct SetRow: View {
                 Image(systemName: exerciseSet.setType.displayIcon)
                     .frame(width: 32, height: 32)
                     .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.6)))
+                    .padding(.leading, exerciseSet.setType == .dropSet ? 32 : 0)
                 
                 Text(exerciseSet.setType.displayName)
                     .fontWeight(.semibold)
