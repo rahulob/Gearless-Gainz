@@ -59,7 +59,7 @@ struct LogTab: View {
 
 struct EmptyWorkoutView: View {
     @Binding var selectedDate: Date
-    @Environment(\.modelContext) var modelContext
+    @Environment(\.modelContext) private var modelContext
     
     var body: some View {
         VStack(spacing:8) {

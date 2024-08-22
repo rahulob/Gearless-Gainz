@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct SettingsTab: View {
     @AppStorage("isWeightInKG") private var isWeightInKG = true
@@ -32,10 +31,11 @@ struct SettingsTab: View {
                     HStack{
                         Text("Increment weight")
                         Spacer()
-                        TextField(
-                            String(incrementWeight * (isWeightInKG ? 1: 2.2)),
-                            value: $incrementWeightState,
-                            format: .number
+                        TextField("",
+                                  value: $incrementWeightState,
+                                  format: .number,
+                                  prompt: Text(String(format: "%.2f", incrementWeight * (isWeightInKG ? 1: 2.2)))
+                            .foregroundStyle(!isFocused ? Color.primary : Color.secondary)
                         )
                         .focused($isFocused)
                         .keyboardType(.decimalPad)

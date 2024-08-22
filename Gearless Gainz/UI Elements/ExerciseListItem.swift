@@ -25,8 +25,10 @@ struct ExerciseListItem: View {
                     .font(.caption)
             }
             Spacer()
-            NavigationLink(destination: EditExerciseView(exercise: $exercise, isNewExercise: false)){
-                Image(systemName: "info.circle.fill")
+            if showInfoButton{
+                NavigationLink(destination: EditExerciseView(exercise: $exercise, isNewExercise: false)){
+                    Image(systemName: "info.circle.fill")
+                }
             }
         }
     }

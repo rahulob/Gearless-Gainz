@@ -12,6 +12,7 @@ struct WorkoutEntryItem: View {
     @AppStorage("isWeightInKG") private var isWeightInKG = true
     @Environment(\.modelContext) private var modelContext
     @State private var showDeleteAlert: Bool = false
+    @State private var showHistorySheet: Bool = false
     
     var entry: WorkoutEntry
     
@@ -23,36 +24,50 @@ struct WorkoutEntryItem: View {
     }
     
     var body: some View {
-        GroupBox{
-            ExerciseListItem(exercise: entry.exercise)
-            VStack(spacing: 16){
-                HStack{
-                    Group{
-                        Text("Type")
-                        Label(isWeightInKG ? "KG" : "LB", systemImage: "scalemass.fill")
-                        Text("Reps")
-                    }
-                    .frame(maxWidth: .infinity)
+        VStack(spacing: 8) {
+            HStack{
+                ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
+                Button(action: { showHistorySheet.toggle() }){
+                    Image(systemName: "calendar.badge.clock")
+                        .font(.title2)
                 }
-                .fontWeight(.bold)
-                
-                ForEach(sortedSets) { exerciseSet in
-                    SetRow(
-                        exerciseSet: exerciseSet,
-                        onDelete: {
-                            withAnimation{
-                                modelContext.delete(exerciseSet)
-                                for (index, sortedSet) in sortedSets.enumerated() {
-                                    if sortedSet.order != index {
-                                        sortedSet.order = index
-                                    }
+                .buttonStyle(PlainButtonStyle())
+                .sheet(isPresented: $showHistorySheet, content: {
+                    ExerciseHistoryView()
+                })
+                Spacer()
+            }
+            
+            HStack{
+                Group{
+                    Text("Type")
+                    HStack {
+                        Image(systemName: "scalemass")
+                        Text(isWeightInKG ? "KG" : "LB")
+                    }
+                    Text("Reps")
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .padding(.vertical, 4)
+            .font(.caption)
+            .fontWeight(.bold)
+            
+            ForEach(sortedSets) { exerciseSet in
+                SetRow(
+                    exerciseSet: exerciseSet,
+                    onDelete: {
+                        withAnimation{
+                            modelContext.delete(exerciseSet)
+                            for (index, sortedSet) in sortedSets.enumerated() {
+                                if sortedSet.order != index {
+                                    sortedSet.order = index
                                 }
                             }
                         }
-                    )
-                }
+                    }
+                )
             }
-            .padding(.leading)
             
             // Add new set to the workout entry
             Button(
@@ -77,7 +92,9 @@ struct WorkoutEntryItem: View {
                 }
             )
             .buttonStyle(BorderedButtonStyle())
+            .foregroundStyle(Color.primary)
         }
+        .padding(.vertical, 8)
     }
 }
 
@@ -109,57 +126,68 @@ private struct SetRow: View {
                 Button("Delete Set", systemImage: "trash", role: .destructive){ modelContext.delete(exerciseSet)
                 }
             }, label: {
-
-                    Image(systemName: exerciseSet.setType.displayIcon)
-                        .frame(width: 32, height: 32)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.8)))
-                    
-                    Text(exerciseSet.setType.displayName)
-                        .fontWeight(.semibold)
-                        .font(.caption2)
-                        .frame(maxWidth: .infinity)
-
+                
+                Image(systemName: exerciseSet.setType.displayIcon)
+                    .frame(width: 32, height: 32)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.6)))
+                
+                Text(exerciseSet.setType.displayName)
+                    .fontWeight(.semibold)
+                    .font(.caption2)
+                
             })
             .buttonStyle(PlainButtonStyle())
+            .frame(maxWidth: .infinity)
             
-            TextField(String(exerciseSet.weight * (isWeightInKG ? 1 : 2.2)), value: $weight, format: .number)
-                .keyboardType(.decimalPad)
-                .focused($focusedField, equals: .weight)
-                .toolbar{
-                    if focusedField == .weight {
-                        ToolbarItem(placement: .keyboard) {
-                            HStack{
-                                Button(action: { exerciseSet.weight *= -1 }, label: { Image(systemName: "plusminus") })
-                                Spacer()
-                                Button(action: { exerciseSet.weight -= incrementWeight }, label: { Image(systemName: "minus") })
-                                Button(action: { exerciseSet.weight += incrementWeight }, label: { Image(systemName: "plus") })
-                                Spacer()
-                                Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
-                            }.font(.body)
-                        }
+            TextField("",
+                      value: $weight,
+                      format: .number,
+                      prompt: Text(
+                        String(format: "%.2f", exerciseSet.weight * (isWeightInKG ? 1 : 2.2)))
+                        .foregroundStyle(focusedField != .weight ? Color.primary : Color.secondary)
+            )
+            .keyboardType(.decimalPad)
+            .focused($focusedField, equals: .weight)
+            .toolbar{
+                if focusedField == .weight {
+                    ToolbarItem(placement: .keyboard) {
+                        HStack{
+                            Button(action: { exerciseSet.weight *= -1 }, label: { Image(systemName: "plusminus") })
+                            Spacer()
+                            Button(action: { exerciseSet.weight -= incrementWeight }, label: { Image(systemName: "minus") })
+                            Button(action: { exerciseSet.weight += incrementWeight }, label: { Image(systemName: "plus") })
+                            Spacer()
+                            Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
+                        }.font(.body)
                     }
                 }
+            }
             
-            TextField("\(exerciseSet.reps)", value: $reps, format: .number)
-                .keyboardType(.numberPad)
-                .focused($focusedField, equals: .reps)
-                .toolbar{
-                    if focusedField == .reps {
-                        ToolbarItem(placement: .keyboard) {
-                            HStack{
-                                Spacer()
-                                Button(action: {
-                                    if exerciseSet.reps != 0 {
-                                        exerciseSet.reps -= 1
-                                    }
-                                }, label: { Image(systemName: "minus") })
-                                Button(action: { exerciseSet.reps += 1 }, label: { Image(systemName: "plus") })
-                                Spacer()
-                                Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
-                            }.font(.body)
-                        }
+            TextField("",
+                      value: $reps,
+                      format: .number,
+                      prompt: Text("\(exerciseSet.reps)")
+                .foregroundStyle(focusedField != .reps ? Color.primary : Color.secondary)
+            )
+            .keyboardType(.numberPad)
+            .focused($focusedField, equals: .reps)
+            .toolbar{
+                if focusedField == .reps {
+                    ToolbarItem(placement: .keyboard) {
+                        HStack{
+                            Spacer()
+                            Button(action: {
+                                if exerciseSet.reps != 0 {
+                                    exerciseSet.reps -= 1
+                                }
+                            }, label: { Image(systemName: "minus") })
+                            Button(action: { exerciseSet.reps += 1 }, label: { Image(systemName: "plus") })
+                            Spacer()
+                            Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
+                        }.font(.body)
                     }
                 }
+            }
         }
         .font(.title3)
         .fontWeight(.bold)
