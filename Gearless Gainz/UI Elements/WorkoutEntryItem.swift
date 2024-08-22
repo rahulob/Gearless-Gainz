@@ -24,34 +24,7 @@ struct WorkoutEntryItem: View {
     }
     
     var body: some View {
-        VStack(spacing: 16) {
-            HStack{
-                ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
-                Button(action: { showHistorySheet.toggle() }){
-                    Image(systemName: "calendar.badge.clock")
-                        .font(.title2)
-                }
-                .buttonStyle(PlainButtonStyle())
-                .sheet(isPresented: $showHistorySheet, content: {
-                    ExerciseHistoryView()
-                })
-                Spacer()
-            }
-            
-            HStack{
-                Group{
-                    Text("Type")
-                    HStack {
-                        Image(systemName: "scalemass")
-                        Text(isWeightInKG ? "KG" : "LB")
-                    }
-                    Text("Reps")
-                }
-                .frame(maxWidth: .infinity)
-            }
-            .font(.caption)
-            .fontWeight(.bold)
-            
+        Section{
             ForEach(sortedSets) { exerciseSet in
                 SetRow(
                     exerciseSet: exerciseSet,
@@ -66,8 +39,67 @@ struct WorkoutEntryItem: View {
                         }
                     }
                 )
+                .padding(.top, 4)
             }
-            
+            .onDelete(perform: { indexSet in
+                withAnimation{
+                    for index in indexSet {
+                        modelContext.delete(sortedSets[index])
+                    }
+                    for (index, sortedSet) in sortedSets.enumerated() {
+                        if sortedSet.order != index {
+                            sortedSet.order = index
+                        }
+                    }
+                }
+            })
+            .onMove(perform: { indices, newOffset in
+                withAnimation{
+                    var exerciseSets = sortedSets
+                    exerciseSets.move(fromOffsets: indices, toOffset: newOffset)
+                    
+                    for (index, exerciseSet) in exerciseSets.enumerated() {
+                        exerciseSet.order = index
+                    }
+                }
+            })
+            .onAppear(perform: {
+                for (index, sortedSet) in sortedSets.enumerated() {
+                    if sortedSet.order != index {
+                        sortedSet.order = index
+                    }
+                }
+            })
+        } header: {
+            VStack(spacing: 16) {
+                HStack{
+                    ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
+                    Button(action: { showHistorySheet.toggle() }){
+                        Image(systemName: "calendar.badge.clock")
+                            .font(.title2)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .sheet(isPresented: $showHistorySheet, content: {
+                        ExerciseHistoryView()
+                    })
+                    Spacer()
+                }
+                HStack{
+                    Group{
+                        Text("Type")
+                        HStack {
+                            Image(systemName: "scalemass")
+                            Text(isWeightInKG ? "KG" : "LB")
+                        }
+                        Text("Reps")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .font(.caption)
+                .fontWeight(.bold)
+            }
+            .foregroundStyle(.primary)
+        } footer: {
             // Add new set to the workout entry
             Button(
                 action: {
@@ -93,7 +125,6 @@ struct WorkoutEntryItem: View {
             .buttonStyle(BorderedButtonStyle())
             .foregroundStyle(Color.primary)
         }
-        .padding(.vertical, 8)
     }
 }
 
@@ -121,9 +152,6 @@ private struct SetRow: View {
                 Button("Warm Up Set", systemImage: ExerciseSetType.warmup.displayIcon){ exerciseSet.setType = .warmup }
                 Button("Working Set", systemImage: ExerciseSetType.working.displayIcon){ exerciseSet.setType = .working }
                 Button("Drop Set", systemImage: ExerciseSetType.dropSet.displayIcon){ exerciseSet.setType = .dropSet }
-                
-                Button("Delete Set", systemImage: "trash", role: .destructive){ modelContext.delete(exerciseSet)
-                }
             }, label: {
                 
                 Image(systemName: exerciseSet.setType.displayIcon)
@@ -131,7 +159,7 @@ private struct SetRow: View {
                     .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.6)))
                     .padding(.leading, exerciseSet.setType == .dropSet ? 32 : 0)
                 
-                Text(exerciseSet.setType.displayName)
+                Text("\(exerciseSet.order)")
                     .fontWeight(.semibold)
                     .font(.caption2)
                 

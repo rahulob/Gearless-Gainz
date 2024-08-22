@@ -42,24 +42,24 @@ struct WorkoutView: View {
                     ForEach(filteredExercises){entry in
                         WorkoutEntryItem(entry: entry)
                     }
-                    .onDelete(perform: { indexSet in
-                        withAnimation{
-                            for index in indexSet{
-                                modelContext.delete(filteredExercises[index])
-                            }
-                            ensureExercisesHaveOrder()
-                        }
-                    })
-                    .onMove(perform: { indices, newOffset in
-                        withAnimation{
-                            var exercises = filteredExercises
-                            exercises.move(fromOffsets: indices, toOffset: newOffset)
-                            
-                            for (index, exercise) in exercises.enumerated() {
-                                exercise.order = index
-                            }
-                        }
-                    })
+//                    .onDelete(perform: { indexSet in
+//                        withAnimation{
+//                            for index in indexSet{
+//                                modelContext.delete(filteredExercises[index])
+//                            }
+//                            ensureExercisesHaveOrder()
+//                        }
+//                    })
+//                    .onMove(perform: { indices, newOffset in
+//                        withAnimation{
+//                            var exercises = filteredExercises
+//                            exercises.move(fromOffsets: indices, toOffset: newOffset)
+//                            
+//                            for (index, exercise) in exercises.enumerated() {
+//                                exercise.order = index
+//                            }
+//                        }
+//                    })
                     .listRowSeparator(.hidden)
                 }
                 .listStyle(.plain)
