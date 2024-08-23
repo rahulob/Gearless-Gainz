@@ -15,6 +15,7 @@ struct WorkoutEntryItem: View {
     @State private var showHistorySheet: Bool = false
     
     var entry: WorkoutEntry
+    var onReOrderEntries: ()->Void
     
     @Query private var exerciseSets: [ExerciseSet]
     private var sortedSets: [ExerciseSet] {
@@ -31,11 +32,6 @@ struct WorkoutEntryItem: View {
                     onDelete: {
                         withAnimation{
                             modelContext.delete(exerciseSet)
-                            for (index, sortedSet) in sortedSets.enumerated() {
-                                if sortedSet.order != index {
-                                    sortedSet.order = index
-                                }
-                            }
                         }
                     }
                 )
@@ -45,11 +41,6 @@ struct WorkoutEntryItem: View {
                 withAnimation{
                     for index in indexSet {
                         modelContext.delete(sortedSets[index])
-                    }
-                    for (index, sortedSet) in sortedSets.enumerated() {
-                        if sortedSet.order != index {
-                            sortedSet.order = index
-                        }
                     }
                 }
             })
@@ -70,19 +61,39 @@ struct WorkoutEntryItem: View {
                     }
                 }
             })
+            .onChange(of: sortedSets, {
+                for (index, sortedSet) in sortedSets.enumerated() {
+                    if sortedSet.order != index {
+                        sortedSet.order = index
+                    }
+                }
+            })
         } header: {
             VStack(spacing: 16) {
-                HStack{
+                HStack(spacing: 16) {
                     ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
-                    Button(action: { showHistorySheet.toggle() }){
-                        Image(systemName: "calendar.badge.clock")
-                            .font(.title2)
+                    // History Button
+                    HStack(spacing: 32){
+                        Button(action: { showHistorySheet.toggle() }){
+                            Image(systemName: "calendar.badge.clock")
+                                .font(.title2)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .sheet(isPresented: $showHistorySheet, content: {
+                            ExerciseHistoryView()
+                        })
+                        // Menu button
+                        Menu("", systemImage: "ellipsis") {
+                            // Reorder workout entry button
+                            Button("Reorder Exercises", systemImage: "arrow.triangle.2.circlepath"){
+                                onReOrderEntries()
+                            }
+                            // Remove Exercise entry from workout
+                            Button("Remove Exercise", systemImage: "trash", role: .destructive) {
+                                modelContext.delete(entry)
+                            }
+                        }
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    .sheet(isPresented: $showHistorySheet, content: {
-                        ExerciseHistoryView()
-                    })
-                    Spacer()
                 }
                 HStack{
                     Group{
@@ -159,7 +170,7 @@ private struct SetRow: View {
                     .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.6)))
                     .padding(.leading, exerciseSet.setType == .dropSet ? 32 : 0)
                 
-                Text("\(exerciseSet.order)")
+                Text(exerciseSet.setType.displayName)
                     .fontWeight(.semibold)
                     .font(.caption2)
                 
@@ -172,7 +183,6 @@ private struct SetRow: View {
                       format: .number,
                       prompt: Text(
                         String(format: "%.2f", exerciseSet.weight * (isWeightInKG ? 1 : 2.2)))
-                        .foregroundStyle(focusedField != .weight ? Color.primary : Color.secondary)
             )
             .keyboardType(.decimalPad)
             .focused($focusedField, equals: .weight)
@@ -182,8 +192,20 @@ private struct SetRow: View {
                         HStack{
                             Button(action: { exerciseSet.weight *= -1 }, label: { Image(systemName: "plusminus") })
                             Spacer()
-                            Button(action: { exerciseSet.weight -= incrementWeight }, label: { Image(systemName: "minus") })
-                            Button(action: { exerciseSet.weight += incrementWeight }, label: { Image(systemName: "plus") })
+                            Button(action: {
+                                if weight == nil {
+                                    exerciseSet.weight -= incrementWeight
+                                } else {
+                                    weight! -= incrementWeight
+                                }
+                            }, label: { Image(systemName: "minus") })
+                            Button(action: {
+                                if weight == nil {
+                                exerciseSet.weight += incrementWeight
+                                } else {
+                                    weight! += incrementWeight
+                                }
+                            }, label: { Image(systemName: "plus") })
                             Spacer()
                             Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
                         }.font(.body)
@@ -195,7 +217,6 @@ private struct SetRow: View {
                       value: $reps,
                       format: .number,
                       prompt: Text("\(exerciseSet.reps)")
-                .foregroundStyle(focusedField != .reps ? Color.primary : Color.secondary)
             )
             .keyboardType(.numberPad)
             .focused($focusedField, equals: .reps)
@@ -206,10 +227,20 @@ private struct SetRow: View {
                             Spacer()
                             Button(action: {
                                 if exerciseSet.reps != 0 {
-                                    exerciseSet.reps -= 1
+                                    if reps != nil {
+                                        reps! -= 1
+                                    } else {
+                                        exerciseSet.reps -= 1
+                                    }
                                 }
                             }, label: { Image(systemName: "minus") })
-                            Button(action: { exerciseSet.reps += 1 }, label: { Image(systemName: "plus") })
+                            Button(action: {
+                                if reps == nil {
+                                exerciseSet.reps += 1
+                                } else {
+                                    reps! += 1
+                                }
+                            }, label: { Image(systemName: "plus") })
                             Spacer()
                             Button(action: { focusedField = nil }, label: { Image(systemName: "keyboard.chevron.compact.down") })
                         }.font(.body)
@@ -232,5 +263,13 @@ private struct SetRow: View {
                 reps = nil
             }
         })
+    }
+}
+
+private struct EntryListView: View {
+    var body: some View {
+        List{
+            
+        }
     }
 }

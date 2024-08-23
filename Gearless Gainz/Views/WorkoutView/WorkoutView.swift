@@ -20,6 +20,7 @@ struct WorkoutView: View {
         }
     // show alert toggle for deleting the workout
     @State private var deleteAlert = false
+    @State private var isReorderState: EditMode = .inactive
     
     var body: some View {
         NavigationStack{
@@ -39,29 +40,38 @@ struct WorkoutView: View {
                 
                 // List of all the exercises in the workout
                 List{
-                    ForEach(filteredExercises){entry in
-                        WorkoutEntryItem(entry: entry)
+                    if isReorderState == .active {
+                        ForEach(filteredExercises){entry in
+                            ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
+                        }
+                        .onDelete(perform: { indexSet in
+                            withAnimation{
+                                for index in indexSet{
+                                    modelContext.delete(filteredExercises[index])
+                                }
+                            }
+                        })
+                        .onMove(perform: { indices, newOffset in
+                            withAnimation{
+                                var exercises = filteredExercises
+                                exercises.move(fromOffsets: indices, toOffset: newOffset)
+                                
+                                for (index, exercise) in exercises.enumerated() {
+                                    exercise.order = index
+                                }
+                            }
+                        })
+                        .listRowSeparator(.hidden)
+                    } else {
+                        ForEach(filteredExercises){entry in
+                            WorkoutEntryItem(entry: entry, onReOrderEntries: {
+                                isReorderState = .active
+                            })
+                        }
+                        .listRowSeparator(.hidden)
                     }
-//                    .onDelete(perform: { indexSet in
-//                        withAnimation{
-//                            for index in indexSet{
-//                                modelContext.delete(filteredExercises[index])
-//                            }
-//                            ensureExercisesHaveOrder()
-//                        }
-//                    })
-//                    .onMove(perform: { indices, newOffset in
-//                        withAnimation{
-//                            var exercises = filteredExercises
-//                            exercises.move(fromOffsets: indices, toOffset: newOffset)
-//                            
-//                            for (index, exercise) in exercises.enumerated() {
-//                                exercise.order = index
-//                            }
-//                        }
-//                    })
-                    .listRowSeparator(.hidden)
                 }
+                .environment(\.editMode, $isReorderState)
                 .listStyle(.plain)
                 .overlay{
                     if filteredExercises.isEmpty{
@@ -79,8 +89,14 @@ struct WorkoutView: View {
                         Image(systemName: "ellipsis")
                     }
                 }
+                if isReorderState == .active {
+                    ToolbarItem {
+                        Button("Done") { isReorderState = .inactive }
+                    }
+                }
             }
             .onAppear(perform: ensureExercisesHaveOrder)
+            .onChange(of: filteredExercises, ensureExercisesHaveOrder)
             .alert(isPresented: $deleteAlert){
                 Alert(
                     title: Text("Are you sure?"),
