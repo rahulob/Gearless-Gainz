@@ -37,7 +37,7 @@ struct WorkoutEntryItem: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .sheet(isPresented: $showHistorySheet, content: {
-                            ExerciseHistoryView()
+                            ExerciseHistoryView(exercise: entry.exercise)
                         })
                         // Menu button
                         Menu("", systemImage: "ellipsis") {
