@@ -26,6 +26,47 @@ struct WorkoutEntryItem: View {
     
     var body: some View {
         Section{
+            VStack(spacing: 16) {
+                HStack(spacing: 16) {
+                    ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
+                    // History Button
+                    HStack(spacing: 32){
+                        Button(action: { showHistorySheet.toggle() }){
+                            Image(systemName: "calendar.badge.clock")
+                                .font(.title2)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .sheet(isPresented: $showHistorySheet, content: {
+                            ExerciseHistoryView()
+                        })
+                        // Menu button
+                        Menu("", systemImage: "ellipsis") {
+                            // Reorder workout entry button
+                            Button("Reorder Exercises", systemImage: "arrow.triangle.2.circlepath"){
+                                onReOrderEntries()
+                            }
+                            // Remove Exercise entry from workout
+                            Button("Remove Exercise", systemImage: "trash", role: .destructive) {
+                                modelContext.delete(entry)
+                            }
+                        }
+                    }
+                }
+                HStack{
+                    Group{
+                        Text("Type")
+                        HStack {
+                            Image(systemName: "scalemass")
+                            Text(isWeightInKG ? "KG" : "LB")
+                        }
+                        Text("Reps")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .font(.caption)
+                .fontWeight(.bold)
+            }
+            .foregroundStyle(.primary)
             ForEach(sortedSets) { exerciseSet in
                 SetRow(
                     exerciseSet: exerciseSet,
@@ -68,48 +109,6 @@ struct WorkoutEntryItem: View {
                     }
                 }
             })
-        } header: {
-            VStack(spacing: 16) {
-                HStack(spacing: 16) {
-                    ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
-                    // History Button
-                    HStack(spacing: 32){
-                        Button(action: { showHistorySheet.toggle() }){
-                            Image(systemName: "calendar.badge.clock")
-                                .font(.title2)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .sheet(isPresented: $showHistorySheet, content: {
-                            ExerciseHistoryView()
-                        })
-                        // Menu button
-                        Menu("", systemImage: "ellipsis") {
-                            // Reorder workout entry button
-                            Button("Reorder Exercises", systemImage: "arrow.triangle.2.circlepath"){
-                                onReOrderEntries()
-                            }
-                            // Remove Exercise entry from workout
-                            Button("Remove Exercise", systemImage: "trash", role: .destructive) {
-                                modelContext.delete(entry)
-                            }
-                        }
-                    }
-                }
-                HStack{
-                    Group{
-                        Text("Type")
-                        HStack {
-                            Image(systemName: "scalemass")
-                            Text(isWeightInKG ? "KG" : "LB")
-                        }
-                        Text("Reps")
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-                .font(.caption)
-                .fontWeight(.bold)
-            }
-            .foregroundStyle(.primary)
         } footer: {
             // Add new set to the workout entry
             Button(
