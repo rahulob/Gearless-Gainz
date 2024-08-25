@@ -83,7 +83,7 @@ struct EmptyWorkoutView: View {
                     }
                     .buttonStyle(.bordered)
                     .sheet(isPresented: $showCopyWorkoutSheet, content: {
-                        CopyWorkoutView()
+                        CopyWorkoutView(selectedDate: $selectedDate)
                     })
                 }
             }
