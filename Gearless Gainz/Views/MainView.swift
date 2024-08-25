@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Tabs: View {
+struct MainView: View {
     var body: some View {
         NavigationStack{
             TabView {
@@ -28,6 +28,6 @@ struct Tabs: View {
 }
 
 #Preview {
-    Tabs()
+    MainView()
         .modelContainer(for: [Workout.self], inMemory: true)
 }

@@ -60,6 +60,7 @@ struct LogTab: View {
 struct EmptyWorkoutView: View {
     @Binding var selectedDate: Date
     @Environment(\.modelContext) private var modelContext
+    @State private var showCopyWorkoutSheet: Bool = false
     
     var body: some View {
         VStack(spacing:8) {
@@ -75,12 +76,15 @@ struct EmptyWorkoutView: View {
 
                     // copy workout
                     Button {
-                        
+                        showCopyWorkoutSheet.toggle()
                     } label: {
                         Label("Copy Old Workout", systemImage: "doc.on.doc.fill")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
+                    .sheet(isPresented: $showCopyWorkoutSheet, content: {
+                        CopyWorkoutView()
+                    })
                 }
             }
             .padding()

@@ -12,7 +12,7 @@ import SwiftData
 struct MainApp: App {
     var body: some Scene {
         WindowGroup {
-            Tabs()
+            MainView()
         }
         .modelContainer(for: [Workout.self], inMemory: true)
     }

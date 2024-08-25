@@ -40,6 +40,7 @@ struct ExerciseHistoryView: View {
 }
 
 private struct EntryListItem: View {
+    @AppStorage("isWeightInKG") private var isWeightInKG = true
     var entry: WorkoutEntry
     
     private var sortedSets: [ExerciseSet] {
@@ -48,11 +49,15 @@ private struct EntryListItem: View {
     var body: some View {
         VStack(spacing: 8) {
             Text(entry.workout?.date.formatted(date: .abbreviated, time: .omitted) ?? "Date Not Found")
-                .font(.title2)
+                .font(.title3)
+                .foregroundStyle(.secondary)
             HStack {
                 Group {
                     Text("Type")
-                    Text("KG")
+                    HStack{
+                        Image(systemName: "scalemass")
+                        Text(isWeightInKG ? "KG" : "LB")
+                    }
                     Text("Reps")
                 }
                 .font(.caption)
@@ -71,7 +76,7 @@ private struct EntryListItem: View {
                     .frame(maxWidth: .infinity)
                     
                     Group {
-                        Text(String(format: "%.2f", exerciseSet.weight))
+                        Text(String(format: "%.2f", exerciseSet.weight * (isWeightInKG ? 1 : 2.2)))
                         Text("\(exerciseSet.reps)")
                     }
                     .font(.title3)
