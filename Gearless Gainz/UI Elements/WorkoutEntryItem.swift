@@ -182,6 +182,7 @@ private struct SetRow: View {
                       format: .number,
                       prompt: Text(
                         String(format: "%.2f", exerciseSet.weight * (isWeightInKG ? 1 : 2.2)))
+                        .foregroundStyle(Color.primary)
             )
             .keyboardType(.decimalPad)
             .focused($focusedField, equals: .weight)
@@ -215,7 +216,7 @@ private struct SetRow: View {
             TextField("",
                       value: $reps,
                       format: .number,
-                      prompt: Text("\(exerciseSet.reps)")
+                      prompt: Text("\(exerciseSet.reps)").foregroundStyle(Color.primary)
             )
             .keyboardType(.numberPad)
             .focused($focusedField, equals: .reps)

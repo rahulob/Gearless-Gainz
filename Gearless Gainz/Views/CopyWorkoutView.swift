@@ -19,9 +19,18 @@ struct CopyWorkoutView: View {
             List(allWorkouts){ workout in
                 CopyWorkoutItem(workout: workout, selectedDate: selectedDate)
             }
+            .overlay {
+                if allWorkouts.isEmpty {
+                    VStack(spacing: 16) {
+                        Image(systemName: "text.badge.xmark")
+                        Text("No workouts found")
+                    }
+                    .fontWeight(.bold)
+                }
+            }
             .navigationTitle("Copy Workout")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar{
+            .toolbar {
                 ToolbarItem(placement: .topBarLeading){
                     Button("Dismiss", systemImage: "xmark.circle.fill"){
                         dismiss()
@@ -34,6 +43,8 @@ struct CopyWorkoutView: View {
 
 private struct CopyWorkoutItem: View {
     @Environment(\.modelContext) private var modelConext
+    @Environment(\.dismiss) private var dismiss
+    
     var workout: Workout
     var selectedDate: Date
     
@@ -42,13 +53,24 @@ private struct CopyWorkoutItem: View {
             HStack {
                 Text(workout.date.formatted(date: .abbreviated, time: .omitted))
                 Spacer()
-                Button("Copy", systemImage: "doc.on.doc.fill"){
-                    let newWorkout = Workout(date: selectedDate)
-                    for entry in workout.entries {
-                        newWorkout.entries.append(WorkoutEntry(exercise: entry.exercise, order: entry.order))
+                Button(
+                    action: {
+                        dismiss()
+                        let newWorkout = Workout(date: selectedDate)
+                        for entry in workout.entries {
+                            let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order)
+                            for exerciseSet in entry.sets {
+                                newEntry.sets.append(ExerciseSet(weight: exerciseSet.weight, reps: exerciseSet.reps, order: exerciseSet.order))
+                            }
+                            newWorkout.entries.append(newEntry)
+                        }
+                        modelConext.insert(newWorkout)
+                    },
+                    label: {
+                        Image(systemName: "doc.on.doc.fill")
                     }
-                    modelConext.insert(newWorkout)
-                }
+                )
+                .buttonStyle(PlainButtonStyle())
             }
             Text(getCommaSeparatedValues())
                 .font(.caption)
