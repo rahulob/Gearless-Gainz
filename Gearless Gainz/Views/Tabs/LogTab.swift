@@ -24,6 +24,7 @@ struct LogTab: View {
                 } label: {
                     Image(systemName: "arrowtriangle.backward.fill")
                 }
+                .buttonStyle(PlainButtonStyle())
                 Spacer()
                 DatePicker(
                     "Day",
@@ -41,6 +42,7 @@ struct LogTab: View {
                 } label: {
                     Image(systemName: "arrowtriangle.forward.fill")
                 }
+                .buttonStyle(PlainButtonStyle())
             }
             .padding()
             Group{
@@ -64,12 +66,12 @@ struct EmptyWorkoutView: View {
     
     var body: some View {
         VStack(spacing:8) {
-            // TODO: workout found for today jump back in to that
             GroupBox("Quick Start"){
                 VStack{
                     Button(action: createWorkout){
                         Label("Start Empty Workout", systemImage: "plus")
                             .frame(maxWidth: .infinity)
+                            .padding(8)
                     }
                     .buttonStyle(.borderedProminent)
                     
@@ -80,39 +82,41 @@ struct EmptyWorkoutView: View {
                     } label: {
                         Label("Copy Old Workout", systemImage: "doc.on.doc.fill")
                             .frame(maxWidth: .infinity)
+                            .padding(8)
                     }
                     .buttonStyle(.bordered)
                     .sheet(isPresented: $showCopyWorkoutSheet, content: {
                         CopyWorkoutView(selectedDate: $selectedDate)
                     })
                 }
+                .fontWeight(.bold)
             }
             .padding()
             .cornerRadius(3)
             .shadow(radius: 10)
             
-            GroupBox("Select from Routine"){
-                VStack{
-                    Button(action: createWorkout){
-                        Label("Start a Routine", systemImage: "clock")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    
-
-                    // copy workout
-                    Button {
-                        
-                    } label: {
-                        Label("Create new routine", systemImage: "plus")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                }
-            }
-            .padding()
-            .cornerRadius(3)
-            .shadow(radius: 10)
+//            GroupBox("Select from Routine"){
+//                VStack{
+//                    Button(action: createWorkout){
+//                        Label("Start a Routine", systemImage: "clock")
+//                            .frame(maxWidth: .infinity)
+//                    }
+//                    .buttonStyle(.borderedProminent)
+//                    
+//
+//                    // copy workout
+//                    Button {
+//                        
+//                    } label: {
+//                        Label("Create new routine", systemImage: "plus")
+//                            .frame(maxWidth: .infinity)
+//                    }
+//                    .buttonStyle(.bordered)
+//                }
+//            }
+//            .padding()
+//            .cornerRadius(3)
+//            .shadow(radius: 10)
             
             Spacer()
         }

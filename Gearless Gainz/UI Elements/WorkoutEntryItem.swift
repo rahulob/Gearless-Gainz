@@ -134,6 +134,7 @@ struct WorkoutEntryItem: View {
             )
             .buttonStyle(BorderedButtonStyle())
             .foregroundStyle(Color.primary)
+            .padding(.bottom)
         }
     }
 }
@@ -166,7 +167,7 @@ private struct SetRow: View {
                 
                 Image(systemName: exerciseSet.setType.displayIcon)
                     .frame(width: 32, height: 32)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.6)))
+//                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.6)))
                     .padding(.leading, exerciseSet.setType == .dropSet ? 32 : 0)
                 
                 Text(exerciseSet.setType.displayName)
@@ -263,13 +264,5 @@ private struct SetRow: View {
                 reps = nil
             }
         })
-    }
-}
-
-private struct EntryListView: View {
-    var body: some View {
-        List{
-            
-        }
     }
 }
