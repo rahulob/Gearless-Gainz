@@ -8,18 +8,18 @@
 import SwiftUI
 import SwiftData
 
-struct CalendarTab: View {
+struct HistoryTab: View {
     @Query private var workouts: [Workout]
     @State private var selectedDate: Date = Date()
+    @State private var showWorkoutSheet: Bool = false
+    @State private var selectedWorkout: Workout = Workout(date: .now)
     
     let boxSize: CGFloat = 40
     let columns = Array(repeating: GridItem(.flexible()), count: 7)
     let calendar = Calendar.current
     
     private var monthInfo: (totalDays: Int, offset: Int, allDates: [Date]) {
-        let year = calendar.component(.year, from: selectedDate)
-        let month = calendar.component(.month, from: selectedDate)
-        let components = DateComponents(year: year, month: month)
+        let components = calendar.dateComponents([.year, .month], from: selectedDate)
         let firstDayOfMonth = calendar.date(from: components)!
         let weekday = calendar.component(.weekday, from: firstDayOfMonth)
         
@@ -32,32 +32,21 @@ struct CalendarTab: View {
         return (numDays, offset, monthDates)
     }
     
+    private var filteredWorkouts: [Workout] {
+        return workouts.filter {
+            let components1 = calendar.dateComponents([.year, .month], from: $0.date)
+            let components2 = calendar.dateComponents([.year, .month], from: selectedDate)
+            
+            // Compare the year and month components
+            return components1.year == components2.year && components1.month == components2.month
+        }
+    }
+    
     var body: some View {
         NavigationStack{
             VStack(spacing: boxSize/2) {
                 // Month picker
-                HStack {
-                    Button {
-                        selectedDate = calendar.date(byAdding: .month, value: -1, to: selectedDate)!
-                    } label: {
-                        Image(systemName: "arrowtriangle.backward.fill")
-                    }
-                    Spacer()
-                    DatePicker(
-                        "Day",
-                        selection: $selectedDate,
-                        in: ...Date.now, 
-                        displayedComponents: .date
-                    )
-                    .labelsHidden()
-                    
-                    Spacer()
-                    Button{
-                        selectedDate = calendar.date(byAdding: .month, value: 1, to: selectedDate)!
-                    } label: {
-                        Image(systemName: "arrowtriangle.forward.fill")
-                    }
-                }
+                MonthPicker(selectedDate: $selectedDate)
                 
                 // Day labels
                 DayLabels(height: boxSize/1.5)
@@ -72,29 +61,46 @@ struct CalendarTab: View {
                     }
                     ForEach(monthInfo.allDates, id: \.self) { date in
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(
-                                calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? .accentColor.opacity(0.7) : colorForDate(date)
-                            )
+                            .fill(colorForDate(date))
                             .frame(width: boxSize, height: boxSize)
                             .overlay(
                                 Text(date.formatted(.dateTime.day()))
+                                    .font(.caption)
                             )
                             .onTapGesture {
-                                selectedDate = date
+                                if colorForDate(date) == .accentColor.opacity(0.5) {
+                                    if let foundEvent = filteredWorkouts.first(where: { calendar.isDate($0.date, equalTo: date, toGranularity: .day) }) {
+                                        selectedWorkout = foundEvent
+                                    } else {
+                                        print("No event found for the given date.")
+                                    }
+
+                                    showWorkoutSheet.toggle()
+                                }
                             }
+                            .sheet(isPresented: $showWorkoutSheet, content: {
+                                WorkoutSheet(workout: $selectedWorkout)
+                            })
                     }
                 }
                 
                 Spacer()
+                Text("\(filteredWorkouts.count)\nworkouts done this month")
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
+                Spacer()
             }
             .padding()
             .navigationTitle("Workout History")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
     private func colorForDate(_ date: Date) -> Color {
-        if calendar.isDate(date, equalTo: .now, toGranularity: .day) {
-            return .accentColor.opacity(0.4)
+        for workout in filteredWorkouts {
+            if calendar.isDate(workout.date, equalTo: date, toGranularity: .day) {
+                return .accentColor.opacity(0.5)
+            }
         }
         return .gray.opacity(0.2)
     }
@@ -120,5 +126,5 @@ private struct DayLabels: View {
 }
 
 #Preview {
-    CalendarTab()
+    HistoryTab()
 }

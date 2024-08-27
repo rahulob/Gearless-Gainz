@@ -16,7 +16,7 @@ struct MainView: View {
                     .tabItem { Label("LOG", systemImage: "dumbbell") }
                 
                 // Tab for viewing the workout history
-                CalendarTab()
+                HistoryTab()
                     .tabItem { Label("HISTORY", systemImage: "calendar") }
                 
                 // Tab for viewing the workout history
