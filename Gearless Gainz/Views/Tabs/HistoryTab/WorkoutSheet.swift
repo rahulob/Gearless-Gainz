@@ -12,7 +12,7 @@ struct WorkoutSheet: View {
     @Binding var workout: Workout
     var body: some View {
         NavigationStack {
-            List(workout.entries) { entry in
+            List(workout.entries.sorted(by: { $0.order < $1.order })) { entry in
                 EntryItem(entry: entry, showExerciseName: true)
                     .listRowSeparator(.hidden)
                     .padding(.bottom)

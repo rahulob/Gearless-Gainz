@@ -9,20 +9,18 @@ import SwiftUI
 
 struct MainView: View {
     var body: some View {
-        NavigationStack{
-            TabView {
-                // Tab for logging the workout
-                LogTab()
-                    .tabItem { Label("LOG", systemImage: "dumbbell") }
-                
-                // Tab for viewing the workout history
-                HistoryTab()
-                    .tabItem { Label("HISTORY", systemImage: "calendar") }
-                
-                // Tab for viewing the workout history
-                SettingsTab()
-                    .tabItem { Label("Settings", systemImage: "gear") }
-            }
+        TabView {
+            // Tab for logging the workout
+            LogTab()
+                .tabItem { Label("LOG", systemImage: "dumbbell") }
+            
+            // Tab for viewing the workout history
+            HistoryTab()
+                .tabItem { Label("HISTORY", systemImage: "calendar") }
+            
+            // Tab for viewing the workout history
+            SettingsTab()
+                .tabItem { Label("Settings", systemImage: "gear") }
         }
     }
 }

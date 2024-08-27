@@ -13,10 +13,21 @@ struct CopyWorkoutView: View {
     @Environment(\.dismiss) private var dismiss
     
     @Binding var selectedDate: Date
-    
+    @State var monthPickerDate: Date = .now
+    private var filteredWorkouts: [Workout] {
+        allWorkouts.filter {
+            let components1 = Calendar.current.dateComponents([.year, .month], from: $0.date)
+            let components2 = Calendar.current.dateComponents([.year, .month], from: monthPickerDate)
+            
+            // Compare the year and month components
+            return components1.year == components2.year && components1.month == components2.month
+        }
+    }
     var body: some View {
         NavigationStack {
-            List(allWorkouts){ workout in
+            MonthPicker(selectedDate: $monthPickerDate)
+                .padding(.horizontal)
+            List(filteredWorkouts){ workout in
                 CopyWorkoutItem(workout: workout, selectedDate: selectedDate)
             }
             .overlay {
