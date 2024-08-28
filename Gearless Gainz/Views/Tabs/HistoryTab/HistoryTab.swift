@@ -66,6 +66,7 @@ struct HistoryTab: View {
                             .overlay(
                                 Text(date.formatted(.dateTime.day()))
                                     .font(.caption)
+                                    .fontWeight(.bold)
                             )
                             .onTapGesture {
                                 if colorForDate(date) == .accentColor.opacity(0.5) {
@@ -79,7 +80,7 @@ struct HistoryTab: View {
                                 }
                             }
                             .sheet(isPresented: $showWorkoutSheet, content: {
-                                WorkoutSheet(workout: $selectedWorkout)
+                                ViewWorkoutSheet(workout: $selectedWorkout)
                             })
                     }
                 }
@@ -127,4 +128,5 @@ private struct DayLabels: View {
 
 #Preview {
     HistoryTab()
+        .modelContainer(for: Workout.self, inMemory: true)
 }

@@ -10,6 +10,7 @@ import SwiftData
 
 struct WorkoutView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Bindable var workout: Workout
     
     // Fetch exercises for current workout
@@ -21,12 +22,25 @@ struct WorkoutView: View {
     // show alert toggle for deleting the workout
     @State private var deleteAlert = false
     @State private var isReorderState: EditMode = .inactive
+    @State private var workoutName = ""
     
     var body: some View {
-        NavigationStack{
-            VStack{
+        NavigationStack {
+            VStack {
+                // Name of the workout
+                TextField("Workout Name", text: $workoutName)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.horizontal)
+                    .onChange(of: workoutName, {
+                        workout.name = workoutName
+                    })
+                    .onAppear {
+                        workoutName = workout.name ?? ""
+                    }
+                
                 // Add exercise Button
-                NavigationLink{
+                NavigationLink {
                     ExercisePickerView(workout: workout)
                 } label: {
                     Label("Add Exercise", systemImage: "plus")
@@ -39,20 +53,20 @@ struct WorkoutView: View {
                 .padding(.horizontal)
                 
                 // List of all the exercises in the workout
-                List{
+                List {
                     if isReorderState == .active {
                         ForEach(filteredExercises){entry in
                             ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
                         }
                         .onDelete(perform: { indexSet in
-                            withAnimation{
+                            withAnimation {
                                 for index in indexSet{
                                     modelContext.delete(filteredExercises[index])
                                 }
                             }
                         })
                         .onMove(perform: { indices, newOffset in
-                            withAnimation{
+                            withAnimation {
                                 var exercises = filteredExercises
                                 exercises.move(fromOffsets: indices, toOffset: newOffset)
                                 
@@ -63,7 +77,7 @@ struct WorkoutView: View {
                         })
                         .listRowSeparator(.hidden)
                     } else {
-                        ForEach(filteredExercises){entry in
+                        ForEach(filteredExercises) { entry in
                             WorkoutEntryItem(entry: entry, onReOrderEntries: {
                                 isReorderState = .active
                             })
@@ -73,36 +87,40 @@ struct WorkoutView: View {
                 }
                 .environment(\.editMode, $isReorderState)
                 .listStyle(.plain)
-                .overlay{
-                    if filteredExercises.isEmpty{
+                .overlay {
+                    if filteredExercises.isEmpty {
                         EmptyExercisesView()
                     }
                 }
             }
-            .toolbar{
-                ToolbarItem{
-                    Menu{
-                        Button("Delete workout"){
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Menu {
+                        Button("Delete workout", systemImage: "trash", role: .destructive){
                             deleteAlert.toggle()
                         }
                     } label: {
                         Image(systemName: "ellipsis")
                     }
                 }
-                if isReorderState == .active {
-                    ToolbarItem {
+                
+                ToolbarItem {
+                    if isReorderState == .active {
                         Button("Done") { isReorderState = .inactive }
+                    } else {
+                        Button("Finish") { dismiss() }
                     }
                 }
             }
             .onAppear(perform: ensureExercisesHaveOrder)
             .onChange(of: filteredExercises, ensureExercisesHaveOrder)
-            .alert(isPresented: $deleteAlert){
+            .alert(isPresented: $deleteAlert) {
                 Alert(
                     title: Text("Are you sure?"),
                     message: Text("Entire workout will be deleted"),
                     primaryButton: .destructive(Text("Delete"), action: {
                         modelContext.delete(workout)
+                        dismiss()
                     }),
                     secondaryButton: .cancel()
                 )
@@ -121,7 +139,7 @@ struct WorkoutView: View {
 
 private struct EmptyExercisesView: View {
     var body: some View {
-        VStack(spacing: 16){
+        VStack(spacing: 16) {
             Spacer()
             Image(systemName: "text.badge.xmark")
             Text("No Exercises found! Add exercercises in this workout")

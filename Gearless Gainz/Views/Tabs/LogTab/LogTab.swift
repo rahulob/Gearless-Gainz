@@ -45,14 +45,14 @@ struct LogTab: View {
                 .buttonStyle(PlainButtonStyle())
             }
             .padding()
-            Group{
-                if filteredWorkouts.count == 0 {
+//            Group{
+//                if filteredWorkouts.count == 0 {
                     EmptyWorkoutView(selectedDate: $selectedDate)
-                }
-                ForEach(filteredWorkouts){workout in
-                    WorkoutView(workout: workout)
-                }
-            }
+//                }
+//                ForEach(filteredWorkouts){workout in
+//                    WorkoutView(workout: workout)
+//                }
+//            }
             .navigationTitle("Log Workout")
             .toolbarTitleDisplayMode(.inline)
         }

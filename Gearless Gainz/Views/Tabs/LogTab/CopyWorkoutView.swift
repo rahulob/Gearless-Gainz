@@ -56,18 +56,27 @@ private struct CopyWorkoutItem: View {
     @Environment(\.modelContext) private var modelConext
     @Environment(\.dismiss) private var dismiss
     
+    @State private var showCopiedWorkoutSheet = false
+    
     var workout: Workout
     var selectedDate: Date
+    @State private var newWorkout = Workout(date: .now)
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text(workout.date.formatted(date: .abbreviated, time: .omitted))
+                VStack(alignment: .leading) {
+                    Text(workout.name ?? "")
+                    Text(workout.date.formatted(date: .abbreviated, time: .shortened))
+                        .font(.caption)
+                        .foregroundStyle(Color.secondary)
+                }
+                .fontWeight(.bold)
+                
                 Spacer()
                 Button(
                     action: {
-                        dismiss()
-                        let newWorkout = Workout(date: selectedDate)
+                        newWorkout = Workout(date: selectedDate)
                         for entry in workout.entries {
                             let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order)
                             for exerciseSet in entry.sets {
@@ -76,6 +85,7 @@ private struct CopyWorkoutItem: View {
                             newWorkout.entries.append(newEntry)
                         }
                         modelConext.insert(newWorkout)
+                        showCopiedWorkoutSheet.toggle()
                     },
                     label: {
                         Image(systemName: "doc.on.doc.fill")
@@ -86,10 +96,17 @@ private struct CopyWorkoutItem: View {
             Text(getCommaSeparatedValues())
                 .font(.caption)
         }
+        .sheet(
+            isPresented: $showCopiedWorkoutSheet,
+            onDismiss: { dismiss() },
+            content: {
+            WorkoutView(workout: newWorkout)
+                    .interactiveDismissDisabled(true)
+        })
     }
     
     private func getCommaSeparatedValues() -> String {
-        let names = workout.entries.map { $0.exercise.name }
+        let names = workout.entries.sorted(by: { $0.order < $1.order } ).map { $0.exercise.name }
         return names.joined(separator: ", ")
     }
 }

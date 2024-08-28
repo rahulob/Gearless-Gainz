@@ -11,19 +11,20 @@ struct EmptyWorkoutView: View {
     @Binding var selectedDate: Date
     @Environment(\.modelContext) private var modelContext
     @State private var showCopyWorkoutSheet: Bool = false
+    @State private var showWorkoutSheet: Bool = false
     
     var body: some View {
         VStack(spacing:8) {
             GroupBox("Quick Start"){
                 VStack{
-                    Button(action: createWorkout){
+                    Button(action: { showWorkoutSheet.toggle() }){
                         Label("Start Empty Workout", systemImage: "plus")
                             .frame(maxWidth: .infinity)
                             .padding(8)
                     }
                     .buttonStyle(.borderedProminent)
                     
-
+                    
                     // copy workout
                     Button {
                         showCopyWorkoutSheet.toggle()
@@ -33,9 +34,20 @@ struct EmptyWorkoutView: View {
                             .padding(8)
                     }
                     .buttonStyle(.bordered)
-                    .sheet(isPresented: $showCopyWorkoutSheet, content: {
+                    .sheet(
+                        isPresented: $showCopyWorkoutSheet,
+                        content: {
                         CopyWorkoutView(selectedDate: $selectedDate)
                     })
+                    .sheet(
+                        isPresented: $showWorkoutSheet,
+                        onDismiss: {
+                            
+                        },
+                        content: {
+                            WorkoutView(workout: getNewWorkout())
+                                .interactiveDismissDisabled(true)
+                        })
                 }
                 .fontWeight(.bold)
             }
@@ -69,9 +81,10 @@ struct EmptyWorkoutView: View {
             Spacer()
         }
     }
-    func createWorkout(){
+    func getNewWorkout() -> Workout{
         let workout = Workout(date: selectedDate)
         modelContext.insert(workout)
+        return workout
     }
 }
 
