@@ -12,8 +12,7 @@ struct CopyWorkoutView: View {
     @Query(sort: \Workout.date) private var allWorkouts: [Workout]
     @Environment(\.dismiss) private var dismiss
     
-    @Binding var selectedDate: Date
-    @State var monthPickerDate: Date = .now
+    @State private var monthPickerDate: Date = .now
     private var filteredWorkouts: [Workout] {
         allWorkouts.filter {
             let components1 = Calendar.current.dateComponents([.year, .month], from: $0.date)
@@ -28,7 +27,7 @@ struct CopyWorkoutView: View {
             MonthPicker(selectedDate: $monthPickerDate)
                 .padding(.horizontal)
             List(filteredWorkouts){ workout in
-                CopyWorkoutItem(workout: workout, selectedDate: selectedDate)
+                CopyWorkoutItem(workout: workout)
             }
             .overlay {
                 if allWorkouts.isEmpty {
@@ -59,7 +58,6 @@ private struct CopyWorkoutItem: View {
     @State private var showCopiedWorkoutSheet = false
     
     var workout: Workout
-    var selectedDate: Date
     @State private var newWorkout = Workout(date: .now)
     
     var body: some View {
@@ -76,7 +74,7 @@ private struct CopyWorkoutItem: View {
                 Spacer()
                 Button(
                     action: {
-                        newWorkout = Workout(date: selectedDate)
+                        newWorkout = Workout(date: .now)
                         for entry in workout.entries {
                             let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order)
                             for exerciseSet in entry.sets {
@@ -100,7 +98,7 @@ private struct CopyWorkoutItem: View {
             isPresented: $showCopiedWorkoutSheet,
             onDismiss: { dismiss() },
             content: {
-            WorkoutView(workout: newWorkout)
+            WorkoutView(workout: $newWorkout)
                     .interactiveDismissDisabled(true)
         })
     }

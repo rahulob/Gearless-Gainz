@@ -12,7 +12,7 @@ struct HistoryTab: View {
     @Query private var workouts: [Workout]
     @State private var selectedDate: Date = Date()
     @State private var showWorkoutSheet: Bool = false
-    @State private var selectedWorkout: Workout = Workout(date: .now)
+    @State private var selectedWorkouts: [Workout] = []
     
     let boxSize: CGFloat = 40
     let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -67,21 +67,25 @@ struct HistoryTab: View {
                                 Text(date.formatted(.dateTime.day()))
                                     .font(.caption)
                                     .fontWeight(.bold)
+                                    .foregroundStyle(Color.secondary)
                             )
                             .onTapGesture {
-                                if colorForDate(date) == .accentColor.opacity(0.5) {
-                                    if let foundEvent = filteredWorkouts.first(where: { calendar.isDate($0.date, equalTo: date, toGranularity: .day) }) {
-                                        selectedWorkout = foundEvent
-                                    } else {
-                                        print("No event found for the given date.")
+                                if colorForDate(date) == .accentColor {
+                                    for workout in filteredWorkouts {
+                                        if calendar.isDate(workout.date, equalTo: date, toGranularity: .day) {
+                                            selectedWorkouts.append(workout)
+                                        }
                                     }
-
                                     showWorkoutSheet.toggle()
                                 }
                             }
-                            .sheet(isPresented: $showWorkoutSheet, content: {
-                                ViewWorkoutSheet(workout: $selectedWorkout)
+                            .sheet(
+                                isPresented: $showWorkoutSheet,
+                                onDismiss: { selectedWorkouts = [] },
+                                content: {
+                                ViewWorkoutSheet(workouts: $selectedWorkouts)
                             })
+                            .onAppear { selectedWorkouts = [] }
                     }
                 }
                 
@@ -100,7 +104,7 @@ struct HistoryTab: View {
     private func colorForDate(_ date: Date) -> Color {
         for workout in filteredWorkouts {
             if calendar.isDate(workout.date, equalTo: date, toGranularity: .day) {
-                return .accentColor.opacity(0.5)
+                return .accentColor
             }
         }
         return .gray.opacity(0.2)
@@ -113,13 +117,14 @@ private struct DayLabels: View {
         HStack {
             ForEach(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], id: \.self) { day in
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(.gray.opacity(0.2))
+                    .fill(.gray.opacity(0.15))
                     .frame(height: height)
                     .overlay(
                         Text(day)
                             .fontWeight(.bold)
                             .frame(maxWidth: .infinity)
                             .font(.caption)
+                            .foregroundStyle(Color.secondary)
                     )
             }
         }

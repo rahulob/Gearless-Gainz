@@ -7,17 +7,23 @@
 
 import SwiftUI
 
-struct EmptyWorkoutView: View {
+struct CreateWorkoutView: View {
     @Binding var selectedDate: Date
     @Environment(\.modelContext) private var modelContext
     @State private var showCopyWorkoutSheet: Bool = false
     @State private var showWorkoutSheet: Bool = false
     
+    @State private var newWorkout = Workout(date: .now)
+    
     var body: some View {
         VStack(spacing:8) {
             GroupBox("Quick Start"){
                 VStack{
-                    Button(action: { showWorkoutSheet.toggle() }){
+                    Button(
+                        action: {
+                            newWorkout = Workout(date: .now)
+                            showWorkoutSheet.toggle()
+                        }) {
                         Label("Start Empty Workout", systemImage: "plus")
                             .frame(maxWidth: .infinity)
                             .padding(8)
@@ -37,15 +43,12 @@ struct EmptyWorkoutView: View {
                     .sheet(
                         isPresented: $showCopyWorkoutSheet,
                         content: {
-                        CopyWorkoutView(selectedDate: $selectedDate)
+                        CopyWorkoutView()
                     })
                     .sheet(
                         isPresented: $showWorkoutSheet,
-                        onDismiss: {
-                            
-                        },
                         content: {
-                            WorkoutView(workout: getNewWorkout())
+                            WorkoutView(workout: $newWorkout)
                                 .interactiveDismissDisabled(true)
                         })
                 }
@@ -55,41 +58,13 @@ struct EmptyWorkoutView: View {
             .cornerRadius(3)
             .shadow(radius: 10)
             
-//            GroupBox("Select from Routine"){
-//                VStack{
-//                    Button(action: createWorkout){
-//                        Label("Start a Routine", systemImage: "clock")
-//                            .frame(maxWidth: .infinity)
-//                    }
-//                    .buttonStyle(.borderedProminent)
-//
-//
-//                    // copy workout
-//                    Button {
-//
-//                    } label: {
-//                        Label("Create new routine", systemImage: "plus")
-//                            .frame(maxWidth: .infinity)
-//                    }
-//                    .buttonStyle(.bordered)
-//                }
-//            }
-//            .padding()
-//            .cornerRadius(3)
-//            .shadow(radius: 10)
-            
             Spacer()
         }
-    }
-    func getNewWorkout() -> Workout{
-        let workout = Workout(date: selectedDate)
-        modelContext.insert(workout)
-        return workout
     }
 }
 
 
 #Preview {
     @State var date = Date()
-    return EmptyWorkoutView(selectedDate: $date)
+    return CreateWorkoutView(selectedDate: $date)
 }
