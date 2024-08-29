@@ -15,16 +15,22 @@ struct ViewWorkoutSheet: View {
     var body: some View {
         NavigationStack {
             ViewWorkoutList(workouts: $workouts)
-            .navigationTitle(date.formatted(date: .abbreviated, time: .omitted))
-            .toolbarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Dismiss", systemImage: "xmark.circle.fill") {
-                        dismiss()
+                .navigationTitle(getTitleFromDate(date: date))
+                .toolbarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Dismiss", systemImage: "xmark.circle.fill") {
+                            dismiss()
+                        }
                     }
                 }
-            }
         }
+    }
+    func getTitleFromDate(date: Date) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) { return "Today" }
+        else if calendar.isDateInYesterday(date) { return "Yesterday" }
+        return date.formatted(date: .abbreviated, time: .omitted)
     }
 }
 

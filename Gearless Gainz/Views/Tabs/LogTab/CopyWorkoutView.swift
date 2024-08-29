@@ -66,7 +66,7 @@ struct CopyWorkoutItem: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text(workout.name ?? "")
-                    Text(workout.date.formatted(date: .abbreviated, time: .shortened))
+                    Text(getStringFromDate(date: workout.date))
                         .font(.caption)
                         .foregroundStyle(Color.secondary)
                 }
@@ -109,5 +109,12 @@ struct CopyWorkoutItem: View {
     private func getCommaSeparatedValues() -> String {
         let names = workout.entries.sorted(by: { $0.order < $1.order } ).map { $0.exercise.name }
         return names.joined(separator: ", ")
+    }
+    
+    func getStringFromDate(date: Date) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) { return "Today at \(date.formatted(date: .omitted, time: .shortened))" }
+        else if calendar.isDateInYesterday(date) { return "Yesterday at \(date.formatted(date: .omitted, time: .shortened))" }
+        return date.formatted(date: .abbreviated, time: .omitted)
     }
 }
