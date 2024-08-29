@@ -169,7 +169,7 @@ private struct EmptyExercisesView: View {
         VStack(spacing: 16) {
             Spacer()
             Image(systemName: "text.badge.xmark")
-            Text("No Exercises found! Add exercercises in this workout")
+            Text("No Exercises found! \nAdd exercercises to this workout")
                 .multilineTextAlignment(.center)
             Spacer()
         }

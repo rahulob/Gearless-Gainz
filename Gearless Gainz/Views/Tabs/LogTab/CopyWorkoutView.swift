@@ -30,10 +30,10 @@ struct CopyWorkoutView: View {
                 CopyWorkoutItem(workout: workout)
             }
             .overlay {
-                if allWorkouts.isEmpty {
+                if filteredWorkouts.isEmpty {
                     VStack(spacing: 16) {
                         Image(systemName: "text.badge.xmark")
-                        Text("No workouts found")
+                        Text("No workouts found in \(getMonthYearString(monthPickerDate))")
                     }
                     .fontWeight(.bold)
                 }

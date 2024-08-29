@@ -38,20 +38,21 @@ struct HistoryTab: View {
                 CalendarGridView(selectedDate: $selectedDate, filteredWorkouts: filteredWorkouts, boxSize: boxSize)
                 
                 Spacer()
+                // text: Workouts done in the month
                 Text("\(filteredWorkouts.count)\nWorkouts done in \(getMonthYearString(selectedDate))")
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
-                if !calendar.isDate(selectedDate, equalTo: .now, toGranularity: .month) {
-                    Button(
-                        action: { selectedDate = .now },
-                        label: {
-                            Label("Go to current month", systemImage: "calendar")
-                                .fontWeight(.bold)
-                                .padding(8)
-                        }
-                    )
-                    .buttonStyle(BorderedProminentButtonStyle())
-                }
+                // button: to go to current month
+                Button(
+                    action: { selectedDate = .now },
+                    label: {
+                        Label("Go to current month", systemImage: "calendar")
+                            .fontWeight(.bold)
+                            .padding(8)
+                    }
+                )
+                .buttonStyle(BorderedProminentButtonStyle())
+                .disabled(calendar.isDate(selectedDate, equalTo: .now, toGranularity: .month))
                 Spacer()
             }
             .padding()

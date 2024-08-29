@@ -28,6 +28,16 @@ struct LogTab: View {
                 // Show recent Workouts
                 List{
                     Section("Recent workouts") {
+                        if recentWorkouts.isEmpty {
+                            VStack(spacing: 16) {
+                                Image(systemName: "text.badge.xmark")
+                                Text("No workouts found")
+                            }
+                            .fontWeight(.bold)
+                            .font(.caption)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                        }
                         ForEach(recentWorkouts){ workout in
                             Button(
                                 action: {
@@ -40,15 +50,6 @@ struct LogTab: View {
                             )
                             .foregroundStyle(.primary)
                         }
-                    }
-                }
-                .overlay {
-                    if recentWorkouts.isEmpty {
-                        VStack(spacing: 16) {
-                            Image(systemName: "text.badge.xmark")
-                            Text("No workouts found")
-                        }
-                        .fontWeight(.bold)
                     }
                 }
                 .sheet(
