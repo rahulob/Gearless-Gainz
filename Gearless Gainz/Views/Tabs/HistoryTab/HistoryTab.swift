@@ -13,6 +13,7 @@ struct HistoryTab: View {
     @State private var selectedDate: Date = Date()
     @State private var showWorkoutSheet: Bool = false
     @State private var selectedWorkouts: [Workout] = []
+    @State private var selectedWorkoutDate: Date = .now
     
     let boxSize: CGFloat = 40
     let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -76,6 +77,7 @@ struct HistoryTab: View {
                                             selectedWorkouts.append(workout)
                                         }
                                     }
+                                    selectedWorkoutDate = date
                                     showWorkoutSheet.toggle()
                                 }
                             }
@@ -83,7 +85,7 @@ struct HistoryTab: View {
                                 isPresented: $showWorkoutSheet,
                                 onDismiss: { selectedWorkouts = [] },
                                 content: {
-                                ViewWorkoutSheet(workouts: $selectedWorkouts)
+                                    ViewWorkoutSheet(workouts: $selectedWorkouts, date: $selectedWorkoutDate)
                             })
                             .onAppear { selectedWorkouts = [] }
                     }

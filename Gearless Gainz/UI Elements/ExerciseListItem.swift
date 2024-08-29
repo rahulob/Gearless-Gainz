@@ -11,6 +11,8 @@ struct ExerciseListItem: View {
     @State var exercise: Exercise
     var showInfoButton: Bool = true
     
+    @State private var showHistorySheet: Bool = false
+    
     var body: some View {
         HStack(spacing: 16){
             ExerciseImage(photoData: exercise.photo)
@@ -29,6 +31,16 @@ struct ExerciseListItem: View {
                 NavigationLink(destination: EditExerciseView(exercise: $exercise, isNewExercise: false)){
                     Image(systemName: "info.circle.fill")
                 }
+            } else {
+                Button(action: { showHistorySheet.toggle() }){
+                    Image(systemName: "calendar.badge.clock")
+                        .font(.title2)
+                }
+                .buttonStyle(PlainButtonStyle())
+                .padding(.trailing)
+                .sheet(isPresented: $showHistorySheet, content: {
+                    ExerciseHistoryView(exercise: exercise)
+                })
             }
         }
     }

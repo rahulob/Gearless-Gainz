@@ -35,6 +35,7 @@ struct EntryItem: View {
                     }
                     Text("Reps")
                 }
+                .foregroundStyle(.secondary)
                 .font(.caption)
                 .frame(maxWidth: .infinity)
             }

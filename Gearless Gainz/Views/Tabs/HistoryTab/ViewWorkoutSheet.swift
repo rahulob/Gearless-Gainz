@@ -10,20 +10,13 @@ import SwiftUI
 struct ViewWorkoutSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var workouts: [Workout]
-    
-    @State private var selectedWorkout: Workout = Workout(date: .now)
-    @State private var showEditWorkoutSheet = false
+    @Binding var date: Date
     
     var body: some View {
         NavigationStack {
-            List{
-                ForEach(workouts) { workout in
-                    ListItem(workout: workout, onSelection: {
-                        selectedWorkout = workout
-                        showEditWorkoutSheet.toggle()
-                    })
-                }
-            }
+            ViewWorkoutList(workouts: $workouts)
+            .navigationTitle(date.formatted(date: .abbreviated, time: .omitted))
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Dismiss", systemImage: "xmark.circle.fill") {
@@ -31,23 +24,64 @@ struct ViewWorkoutSheet: View {
                     }
                 }
             }
-            .sheet(
-                isPresented: $showEditWorkoutSheet,
-                onDismiss: {
-                    dismiss()
-                },
-                content: {
-                    WorkoutView(workout: $selectedWorkout)
-                        .interactiveDismissDisabled(true)
-                })
         }
     }
 }
 
-private struct ListItem: View {
-    var workout: Workout
-    var onSelection: ()->Void
+private struct ViewWorkoutList: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Binding var workouts: [Workout]
     
+    
+    @State private var selectedWorkout: Workout = Workout(date: .now)
+    @State private var showEditWorkoutSheet = false
+    var body: some View {
+        List{
+            ForEach(workouts.sorted(by: { $0.date < $1.date })) { workout in
+                ViewWorkoutItem(
+                    workout: workout,
+                    onEditWorkout: {
+                        selectedWorkout = workout
+                        showEditWorkoutSheet.toggle()
+                    },
+                    onCopyWorkout: {
+                        selectedWorkout = Workout(date: .now)
+                        for entry in workout.entries {
+                            let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order)
+                            for exerciseSet in entry.sets {
+                                newEntry.sets.append(ExerciseSet(weight: exerciseSet.weight, reps: exerciseSet.reps, order: exerciseSet.order))
+                            }
+                            selectedWorkout.entries.append(newEntry)
+                        }
+                        modelContext.insert(selectedWorkout)
+                        showEditWorkoutSheet.toggle()
+                    },
+                    onDeleteWorkout: {
+                        modelContext.delete(workout)
+                        dismiss()
+                    }
+                )
+            }
+        }
+        .sheet(
+            isPresented: $showEditWorkoutSheet,
+            onDismiss: {
+                dismiss()
+            },
+            content: {
+                WorkoutView(workout: $selectedWorkout)
+                    .interactiveDismissDisabled(true)
+            })
+    }
+}
+private struct ViewWorkoutItem: View {
+    var workout: Workout
+    var onEditWorkout: ()->Void
+    var onCopyWorkout: ()->Void
+    var onDeleteWorkout: ()->Void
+    
+    @State private var showDeleteAlert = false
     var body: some View {
         Section {
             ForEach(workout.entries.sorted(by: { $0.order < $1.order })) { entry in
@@ -59,13 +93,22 @@ private struct ListItem: View {
             HStack{
                 VStack(alignment: .leading) {
                     Text(workout.name ?? "").font(.title)
-                    Text(workout.date.formatted(date: .abbreviated, time: .shortened))
-                        .font(workout.name != nil ? .caption : .title)
+                    Text(workout.date.formatted(date: .omitted, time: .shortened))
+                        .font(workout.name != nil ? .caption : .body)
                 }
                 Spacer()
-                Button("Edit", systemImage: "square.and.pencil", action: onSelection)
+                Menu("", systemImage: "ellipsis") {
+                    Button("Edit", systemImage: "square.and.pencil", action: onEditWorkout )
+                    Button("Copy", systemImage: "doc.on.doc", action: onCopyWorkout )
+                    Button("Delete", systemImage: "trash", role: .destructive, action: { showDeleteAlert.toggle() })
+                }
+                .font(.system(size: 18))
             }
             .fontWeight(.bold)
+        }
+        .alert("Entire workout will be deleted", isPresented: $showDeleteAlert) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive, action: onDeleteWorkout)
         }
     }
 }

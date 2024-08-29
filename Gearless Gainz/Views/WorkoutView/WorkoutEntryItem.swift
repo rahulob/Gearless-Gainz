@@ -12,7 +12,6 @@ struct WorkoutEntryItem: View {
     @AppStorage("isWeightInKG") private var isWeightInKG = true
     @Environment(\.modelContext) private var modelContext
     @State private var showDeleteAlert: Bool = false
-    @State private var showHistorySheet: Bool = false
     
     var entry: WorkoutEntry
     var onReOrderEntries: ()->Void
@@ -27,31 +26,23 @@ struct WorkoutEntryItem: View {
     var body: some View {
         Section{
             VStack(spacing: 16) {
-                HStack(spacing: 16) {
+                // Header of the exercise
+                HStack {
                     ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
-                    // History Button
-                    HStack(spacing: 32){
-                        Button(action: { showHistorySheet.toggle() }){
-                            Image(systemName: "calendar.badge.clock")
-                                .font(.title2)
+                    // Menu button
+                    Menu("", systemImage: "ellipsis") {
+                        // Reorder workout entry button
+                        Button("Reorder Exercises", systemImage: "arrow.triangle.2.circlepath"){
+                            onReOrderEntries()
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        .sheet(isPresented: $showHistorySheet, content: {
-                            ExerciseHistoryView(exercise: entry.exercise)
-                        })
-                        // Menu button
-                        Menu("", systemImage: "ellipsis") {
-                            // Reorder workout entry button
-                            Button("Reorder Exercises", systemImage: "arrow.triangle.2.circlepath"){
-                                onReOrderEntries()
-                            }
-                            // Remove Exercise entry from workout
-                            Button("Remove Exercise", systemImage: "trash", role: .destructive) {
-                                modelContext.delete(entry)
-                            }
+                        // Remove Exercise entry from workout
+                        Button("Remove Exercise", systemImage: "trash", role: .destructive) {
+                            modelContext.delete(entry)
                         }
                     }
+                    .foregroundStyle(.primary)
                 }
+                
                 HStack{
                     Group{
                         Text("Type")
@@ -63,10 +54,12 @@ struct WorkoutEntryItem: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .foregroundStyle(.secondary)
                 .font(.caption)
                 .fontWeight(.bold)
             }
-            .foregroundStyle(.primary)
+            
+            // Sets of the exercise
             ForEach(sortedSets) { exerciseSet in
                 SetRow(
                     exerciseSet: exerciseSet,

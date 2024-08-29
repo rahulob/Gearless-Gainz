@@ -29,6 +29,7 @@ struct WorkoutView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                // Workout Header
                 VStack {
                     // Name of the workout
                     TextField("Workout Name", text: $workoutName)
@@ -40,7 +41,6 @@ struct WorkoutView: View {
                         .onAppear {
                             workoutName = workout.name ?? ""
                         }
-                    
                     // Date of the workout
                     DatePicker("Workout date", selection: $workoutDate)
                         .onChange(of: workoutDate, {
@@ -49,24 +49,24 @@ struct WorkoutView: View {
                         .onAppear {
                             workoutDate = workout.date
                         }
+                    
+                    // Add exercise Button
+                    NavigationLink {
+                        ExercisePickerView(workout: workout)
+                    } label: {
+                        Label("Add Exercise", systemImage: "plus")
+                            .font(.system(size: 18))
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity)
+                            .padding(8)
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
-                .padding(.horizontal)
-                
-                // Add exercise Button
-                NavigationLink {
-                    ExercisePickerView(workout: workout)
-                } label: {
-                    Label("Add Exercise", systemImage: "plus")
-                        .font(.system(size: 18))
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity)
-                        .padding(8)
-                }
-                .buttonStyle(.borderedProminent)
                 .padding(.horizontal)
                 
                 // List of all the exercises in the workout
                 List {
+                    // In Reorder state
                     if isReorderState == .active {
                         Section("Press done after reordering") {
                             ForEach(filteredExercises){entry in
@@ -91,7 +91,9 @@ struct WorkoutView: View {
                             })
                             .listRowSeparator(.hidden)
                         }
-                    } else {
+                    } 
+                    // Normal state for editting exercises
+                    else {
                         ForEach(filteredExercises) { entry in
                             WorkoutEntryItem(entry: entry, onReOrderEntries: {
                                 isReorderState = .active
@@ -130,25 +132,22 @@ struct WorkoutView: View {
                                 dismiss()
                             }
                         }
+                        .buttonStyle(BorderedProminentButtonStyle())
                     }
                 }
             }
             .onAppear(perform: ensureExercisesHaveOrder)
             .onChange(of: filteredExercises, ensureExercisesHaveOrder)
-            .alert(isPresented: $deleteWorkoutAlert) {
-                Alert(
-                    title: Text("Are you sure?"),
-                    message: Text("Entire workout will be deleted"),
-                    primaryButton: .destructive(Text("Delete"), action: {
-                        modelContext.delete(workout)
-                        dismiss()
-                    }),
-                    secondaryButton: .cancel()
-                )
-            }
             .alert("Empty workout will be discarded", isPresented: $finishWorkoutAlert) {
                 Button("Continue workout", role: .cancel) { }
                 Button("Discard workout", role: .destructive) {
+                    modelContext.delete(workout)
+                    dismiss()
+                }
+            }
+            .alert("Entire workout will be deleted", isPresented: $deleteWorkoutAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Delete", role: .destructive) {
                     modelContext.delete(workout)
                     dismiss()
                 }

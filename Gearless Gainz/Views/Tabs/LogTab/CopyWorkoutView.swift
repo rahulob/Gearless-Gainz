@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct CopyWorkoutView: View {
-    @Query(sort: \Workout.date) private var allWorkouts: [Workout]
+    @Query(sort: \Workout.date, order: .reverse) private var allWorkouts: [Workout]
     @Environment(\.dismiss) private var dismiss
     
     @State private var monthPickerDate: Date = .now
@@ -51,13 +51,14 @@ struct CopyWorkoutView: View {
     }
 }
 
-private struct CopyWorkoutItem: View {
-    @Environment(\.modelContext) private var modelConext
+struct CopyWorkoutItem: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
     @State private var showCopiedWorkoutSheet = false
     
     var workout: Workout
+    var showCopyButton = true
     @State private var newWorkout = Workout(date: .now)
     
     var body: some View {
@@ -69,31 +70,33 @@ private struct CopyWorkoutItem: View {
                         .font(.caption)
                         .foregroundStyle(Color.secondary)
                 }
-                .fontWeight(.bold)
                 
                 Spacer()
-                Button(
-                    action: {
-                        newWorkout = Workout(date: .now)
-                        for entry in workout.entries {
-                            let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order)
-                            for exerciseSet in entry.sets {
-                                newEntry.sets.append(ExerciseSet(weight: exerciseSet.weight, reps: exerciseSet.reps, order: exerciseSet.order))
+                if showCopyButton {
+                    Button(
+                        action: {
+                            newWorkout = Workout(date: .now)
+                            for entry in workout.entries {
+                                let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order)
+                                for exerciseSet in entry.sets {
+                                    newEntry.sets.append(ExerciseSet(weight: exerciseSet.weight, reps: exerciseSet.reps, order: exerciseSet.order))
+                                }
+                                newWorkout.entries.append(newEntry)
                             }
-                            newWorkout.entries.append(newEntry)
+                            modelContext.insert(newWorkout)
+                            showCopiedWorkoutSheet.toggle()
+                        },
+                        label: {
+                            Image(systemName: "doc.on.doc.fill")
                         }
-                        modelConext.insert(newWorkout)
-                        showCopiedWorkoutSheet.toggle()
-                    },
-                    label: {
-                        Image(systemName: "doc.on.doc.fill")
-                    }
-                )
-                .buttonStyle(PlainButtonStyle())
+                    )
+                    .buttonStyle(PlainButtonStyle())
+                }
             }
             Text(getCommaSeparatedValues())
                 .font(.caption)
         }
+        .fontWeight(.bold)
         .sheet(
             isPresented: $showCopiedWorkoutSheet,
             onDismiss: { dismiss() },

@@ -72,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				D5E641352C6B6CB3008397A4 /* WorkoutView.swift */,
+				D5D7DAC72C731E4A0059DD07 /* WorkoutEntryItem.swift */,
 				D5E6413A2C6B7D0D008397A4 /* ExercisePickerView.swift */,
 				D5E6413C2C6B7DCB008397A4 /* EditExerciseView.swift */,
 				D53DF6B02C75DE400094AC2A /* ExerciseHistoryView.swift */,
@@ -103,7 +104,6 @@
 			children = (
 				D5A531152C71B0870071E647 /* ExerciseListItem.swift */,
 				D5A531132C71AD910071E647 /* ExerciseImage.swift */,
-				D5D7DAC72C731E4A0059DD07 /* WorkoutEntryItem.swift */,
 				D55A60682C7DE690009E94E2 /* MonthPicker.swift */,
 				D55A606F2C7DE9E3009E94E2 /* EntryItem.swift */,
 			);
