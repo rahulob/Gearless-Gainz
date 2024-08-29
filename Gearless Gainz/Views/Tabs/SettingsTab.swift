@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsTab: View {
     @AppStorage("isWeightInKG") private var isWeightInKG = true
     @AppStorage("incrementWeight") private var incrementWeight = 2.5
+    @AppStorage("copyWorkoutTitle") private var copyWorkoutTitle = true
 
     @State private var incrementWeightState: Double?
     @FocusState private var isFocused: Bool
@@ -67,6 +68,11 @@ struct SettingsTab: View {
                         Text(isWeightInKG ? "KG" : "LB")
                             .font(.caption)
                     }
+                }
+                
+                // Copy workout title
+                Section("Copy Workout Settings") {
+                    Toggle("Copy Workout Name", isOn: $copyWorkoutTitle)
                 }
                 
                 // Delete Entire data present in the app

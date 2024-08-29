@@ -76,7 +76,7 @@ private struct ViewWorkoutList: View {
                 dismiss()
             },
             content: {
-                WorkoutView(workout: $selectedWorkout)
+                EditWorkoutView(workout: $selectedWorkout)
                     .interactiveDismissDisabled(true)
             })
     }

@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct WorkoutView: View {
+struct EditWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Binding var workout: Workout
@@ -183,7 +183,7 @@ private struct EmptyExercisesView: View {
 
     @State var w = Workout(date: .now)
     
-    return WorkoutView(workout: $w)
+    return EditWorkoutView(workout: $w)
         .modelContainer(container)
 }
 

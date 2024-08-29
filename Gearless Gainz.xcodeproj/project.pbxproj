@@ -25,10 +25,11 @@
 		D5E6412A2C6B6AB2008397A4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5E641292C6B6AB2008397A4 /* Preview Assets.xcassets */; };
 		D5E641312C6B6B3D008397A4 /* LogTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641302C6B6B3D008397A4 /* LogTab.swift */; };
 		D5E641342C6B6C19008397A4 /* HistoryTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641332C6B6C19008397A4 /* HistoryTab.swift */; };
-		D5E641362C6B6CB3008397A4 /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641352C6B6CB3008397A4 /* WorkoutView.swift */; };
+		D5E641362C6B6CB3008397A4 /* EditWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641352C6B6CB3008397A4 /* EditWorkoutView.swift */; };
 		D5E641392C6B6FA9008397A4 /* WorkoutModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E641382C6B6FA9008397A4 /* WorkoutModel.swift */; };
 		D5E6413B2C6B7D0D008397A4 /* ExercisePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E6413A2C6B7D0D008397A4 /* ExercisePickerView.swift */; };
 		D5E6413D2C6B7DCB008397A4 /* EditExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E6413C2C6B7DCB008397A4 /* EditExerciseView.swift */; };
+		D5ED1CF62C807FB500A5879F /* CalendarGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ED1CF52C807FB500A5879F /* CalendarGridView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,10 +52,11 @@
 		D5E641292C6B6AB2008397A4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D5E641302C6B6B3D008397A4 /* LogTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogTab.swift; sourceTree = "<group>"; };
 		D5E641332C6B6C19008397A4 /* HistoryTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTab.swift; sourceTree = "<group>"; };
-		D5E641352C6B6CB3008397A4 /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
+		D5E641352C6B6CB3008397A4 /* EditWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditWorkoutView.swift; sourceTree = "<group>"; };
 		D5E641382C6B6FA9008397A4 /* WorkoutModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutModel.swift; sourceTree = "<group>"; };
 		D5E6413A2C6B7D0D008397A4 /* ExercisePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePickerView.swift; sourceTree = "<group>"; };
 		D5E6413C2C6B7DCB008397A4 /* EditExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExerciseView.swift; sourceTree = "<group>"; };
+		D5ED1CF52C807FB500A5879F /* CalendarGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarGridView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,16 +70,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D54466682C6C7AFE00468800 /* WorkoutView */ = {
+		D54466682C6C7AFE00468800 /* EditWorkoutView */ = {
 			isa = PBXGroup;
 			children = (
-				D5E641352C6B6CB3008397A4 /* WorkoutView.swift */,
+				D5E641352C6B6CB3008397A4 /* EditWorkoutView.swift */,
 				D5D7DAC72C731E4A0059DD07 /* WorkoutEntryItem.swift */,
 				D5E6413A2C6B7D0D008397A4 /* ExercisePickerView.swift */,
 				D5E6413C2C6B7DCB008397A4 /* EditExerciseView.swift */,
 				D53DF6B02C75DE400094AC2A /* ExerciseHistoryView.swift */,
 			);
-			path = WorkoutView;
+			path = EditWorkoutView;
 			sourceTree = "<group>";
 		};
 		D55A60672C7DE64F009E94E2 /* HistoryTab */ = {
@@ -85,6 +87,7 @@
 			children = (
 				D5E641332C6B6C19008397A4 /* HistoryTab.swift */,
 				D55A606D2C7DE833009E94E2 /* ViewWorkoutSheet.swift */,
+				D5ED1CF52C807FB500A5879F /* CalendarGridView.swift */,
 			);
 			path = HistoryTab;
 			sourceTree = "<group>";
@@ -172,7 +175,7 @@
 			children = (
 				D5E641242C6B6AB0008397A4 /* MainView.swift */,
 				D5E641322C6B6B5F008397A4 /* Tabs */,
-				D54466682C6C7AFE00468800 /* WorkoutView */,
+				D54466682C6C7AFE00468800 /* EditWorkoutView */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -252,6 +255,7 @@
 				D55A606C2C7DE761009E94E2 /* CreateWorkoutView.swift in Sources */,
 				D55A60692C7DE690009E94E2 /* MonthPicker.swift in Sources */,
 				D5E641342C6B6C19008397A4 /* HistoryTab.swift in Sources */,
+				D5ED1CF62C807FB500A5879F /* CalendarGridView.swift in Sources */,
 				D55A606E2C7DE833009E94E2 /* ViewWorkoutSheet.swift in Sources */,
 				D5E641232C6B6AB0008397A4 /* MainApp.swift in Sources */,
 				D5D7DAC82C731E4A0059DD07 /* WorkoutEntryItem.swift in Sources */,
@@ -263,7 +267,7 @@
 				D53DF6B12C75DE400094AC2A /* ExerciseHistoryView.swift in Sources */,
 				D5E6413B2C6B7D0D008397A4 /* ExercisePickerView.swift in Sources */,
 				D5A531182C71F5940071E647 /* ExerciseModel.swift in Sources */,
-				D5E641362C6B6CB3008397A4 /* WorkoutView.swift in Sources */,
+				D5E641362C6B6CB3008397A4 /* EditWorkoutView.swift in Sources */,
 				D5E6413D2C6B7DCB008397A4 /* EditExerciseView.swift in Sources */,
 				D5E641392C6B6FA9008397A4 /* WorkoutModel.swift in Sources */,
 				D5A531142C71AD910071E647 /* ExerciseImage.swift in Sources */,

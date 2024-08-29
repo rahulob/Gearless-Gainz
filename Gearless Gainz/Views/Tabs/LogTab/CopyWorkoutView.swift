@@ -54,6 +54,7 @@ struct CopyWorkoutView: View {
 struct CopyWorkoutItem: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("copyWorkoutTitle") private var copyWorkoutTitle = true
     
     @State private var showCopiedWorkoutSheet = false
     
@@ -83,6 +84,9 @@ struct CopyWorkoutItem: View {
                                 }
                                 newWorkout.entries.append(newEntry)
                             }
+                            if copyWorkoutTitle {
+                                newWorkout.name = workout.name
+                            }
                             modelContext.insert(newWorkout)
                             showCopiedWorkoutSheet.toggle()
                         },
@@ -101,7 +105,7 @@ struct CopyWorkoutItem: View {
             isPresented: $showCopiedWorkoutSheet,
             onDismiss: { dismiss() },
             content: {
-            WorkoutView(workout: $newWorkout)
+            EditWorkoutView(workout: $newWorkout)
                     .interactiveDismissDisabled(true)
         })
     }
@@ -115,6 +119,6 @@ struct CopyWorkoutItem: View {
         let calendar = Calendar.current
         if calendar.isDateInToday(date) { return "Today at \(date.formatted(date: .omitted, time: .shortened))" }
         else if calendar.isDateInYesterday(date) { return "Yesterday at \(date.formatted(date: .omitted, time: .shortened))" }
-        return date.formatted(date: .abbreviated, time: .omitted)
+        return date.formatted(date: .abbreviated, time: .shortened)
     }
 }

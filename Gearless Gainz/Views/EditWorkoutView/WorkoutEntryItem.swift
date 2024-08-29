@@ -160,7 +160,6 @@ private struct SetRow: View {
                 
                 Image(systemName: exerciseSet.setType.displayIcon)
                     .frame(width: 32, height: 32)
-//                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.6)))
                     .padding(.leading, exerciseSet.setType == .dropSet ? 32 : 0)
                 
                 Text(exerciseSet.setType.displayName)
@@ -176,7 +175,7 @@ private struct SetRow: View {
                       format: .number,
                       prompt: Text(
                         String(format: "%.2f", exerciseSet.weight * (isWeightInKG ? 1 : 2.2)))
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(focusedField == .weight ? Color.secondary : Color.primary)
             )
             .keyboardType(.decimalPad)
             .focused($focusedField, equals: .weight)
@@ -210,7 +209,8 @@ private struct SetRow: View {
             TextField("",
                       value: $reps,
                       format: .number,
-                      prompt: Text("\(exerciseSet.reps)").foregroundStyle(Color.primary)
+                      prompt: Text("\(exerciseSet.reps)")
+                .foregroundStyle(focusedField == .reps ? Color.secondary : Color.primary)
             )
             .keyboardType(.numberPad)
             .focused($focusedField, equals: .reps)

@@ -46,7 +46,7 @@ struct CreateWorkoutView: View {
                 .sheet(
                     isPresented: $showWorkoutSheet,
                     content: {
-                        WorkoutView(workout: $newWorkout)
+                        EditWorkoutView(workout: $newWorkout)
                             .interactiveDismissDisabled(true)
                     })
             }

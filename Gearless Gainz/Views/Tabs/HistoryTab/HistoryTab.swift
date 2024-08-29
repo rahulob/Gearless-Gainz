@@ -11,27 +11,9 @@ import SwiftData
 struct HistoryTab: View {
     @Query private var workouts: [Workout]
     @State private var selectedDate: Date = Date()
-    @State private var showWorkoutSheet: Bool = false
-    @State private var selectedWorkouts: [Workout] = []
-    @State private var selectedWorkoutDate: Date = .now
     
     let boxSize: CGFloat = 40
-    let columns = Array(repeating: GridItem(.flexible()), count: 7)
     let calendar = Calendar.current
-    
-    private var monthInfo: (totalDays: Int, offset: Int, allDates: [Date]) {
-        let components = calendar.dateComponents([.year, .month], from: selectedDate)
-        let firstDayOfMonth = calendar.date(from: components)!
-        let weekday = calendar.component(.weekday, from: firstDayOfMonth)
-        
-        let range = calendar.range(of: .day, in: .month, for: firstDayOfMonth)!
-        let numDays = range.count
-        
-        let offset = (weekday + 7 - calendar.firstWeekday) % 7
-        
-        let monthDates = (0..<numDays).compactMap { calendar.date(byAdding: .day, value: $0, to: firstDayOfMonth) }
-        return (numDays, offset, monthDates)
-    }
     
     private var filteredWorkouts: [Workout] {
         return workouts.filter {
@@ -53,63 +35,29 @@ struct HistoryTab: View {
                 DayLabels(height: boxSize/1.5)
                 
                 // Grid of days
-                LazyVGrid(columns: columns, spacing: boxSize/3) {
-                    // Empty cells before the first day of the month
-                    ForEach(0..<monthInfo.offset, id: \.self) { _ in
-                        Text("")
-                            .frame(width: boxSize, height: boxSize)
-                            .background(Color.clear)
-                    }
-                    ForEach(monthInfo.allDates, id: \.self) { date in
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(colorForDate(date))
-                            .frame(width: boxSize, height: boxSize)
-                            .overlay(
-                                Text(date.formatted(.dateTime.day()))
-                                    .font(.caption)
-                                    .fontWeight(.bold)
-                                    .foregroundStyle(Color.secondary)
-                            )
-                            .onTapGesture {
-                                if colorForDate(date) == .accentColor {
-                                    for workout in filteredWorkouts {
-                                        if calendar.isDate(workout.date, equalTo: date, toGranularity: .day) {
-                                            selectedWorkouts.append(workout)
-                                        }
-                                    }
-                                    selectedWorkoutDate = date
-                                    showWorkoutSheet.toggle()
-                                }
-                            }
-                            .sheet(
-                                isPresented: $showWorkoutSheet,
-                                onDismiss: { selectedWorkouts = [] },
-                                content: {
-                                    ViewWorkoutSheet(workouts: $selectedWorkouts, date: $selectedWorkoutDate)
-                            })
-                            .onAppear { selectedWorkouts = [] }
-                    }
-                }
+                CalendarGridView(selectedDate: $selectedDate, filteredWorkouts: filteredWorkouts, boxSize: boxSize)
                 
                 Spacer()
-                Text("\(filteredWorkouts.count)\nworkouts done this month")
+                Text("\(filteredWorkouts.count)\nWorkouts done in \(getMonthYearString(selectedDate))")
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
+                if !calendar.isDate(selectedDate, equalTo: .now, toGranularity: .month) {
+                    Button(
+                        action: { selectedDate = .now },
+                        label: {
+                            Label("Go to current month", systemImage: "calendar")
+                                .fontWeight(.bold)
+                                .padding(8)
+                        }
+                    )
+                    .buttonStyle(BorderedProminentButtonStyle())
+                }
                 Spacer()
             }
             .padding()
             .navigationTitle("Workout History")
             .navigationBarTitleDisplayMode(.inline)
         }
-    }
-    
-    private func colorForDate(_ date: Date) -> Color {
-        for workout in filteredWorkouts {
-            if calendar.isDate(workout.date, equalTo: date, toGranularity: .day) {
-                return .accentColor
-            }
-        }
-        return .gray.opacity(0.2)
     }
 }
 
