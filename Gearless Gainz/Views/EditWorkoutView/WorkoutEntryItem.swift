@@ -147,17 +147,11 @@ private struct SetRow: View {
     
     @State private var weight: Double? = nil
     @State private var reps: Int? = nil
-    @State private var setType: ExerciseSetType = .working
+//    @State private var setType: ExerciseSetType = .working
     
     var body: some View {
-        HStack{
-            Menu(content: {
-                Text("Change to")
-                Button("Warm Up Set", systemImage: ExerciseSetType.warmup.displayIcon){ exerciseSet.setType = .warmup }
-                Button("Working Set", systemImage: ExerciseSetType.working.displayIcon){ exerciseSet.setType = .working }
-                Button("Drop Set", systemImage: ExerciseSetType.dropSet.displayIcon){ exerciseSet.setType = .dropSet }
-            }, label: {
-                
+        HStack {
+            HStack {
                 Image(systemName: exerciseSet.setType.displayIcon)
                     .frame(width: 32, height: 32)
                     .padding(.leading, exerciseSet.setType == .dropSet ? 32 : 0)
@@ -166,8 +160,7 @@ private struct SetRow: View {
                     .fontWeight(.semibold)
                     .font(.caption2)
                 
-            })
-            .buttonStyle(PlainButtonStyle())
+            }
             .frame(maxWidth: .infinity)
             
             TextField("",
@@ -257,5 +250,13 @@ private struct SetRow: View {
                 reps = nil
             }
         })
+        .swipeActions(edge: .leading) {
+            ForEach(ExerciseSetType.allCases, id: \.self) { setType in
+                if setType != exerciseSet.setType {
+                    Button(setType.displayName) { exerciseSet.setType = setType } 
+                        .tint(setType == .warmup ? .blue.opacity(0.5) : .accentColor.opacity(0.5))
+                }
+            }
+        }
     }
 }
