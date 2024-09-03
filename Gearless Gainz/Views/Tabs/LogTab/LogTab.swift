@@ -9,57 +9,65 @@ import SwiftUI
 import SwiftData
 
 struct LogTab: View {
-    @Query(sort: \Workout.date, order: .reverse) private var allWorkouts: [Workout]
-    @State private var selectedWorkouts: [Workout] = []
-    @State private var selectedWorkoutDate: Date = .now
-    @State private var showWorkoutSheet: Bool = false
-    private var recentWorkouts: [Workout] {
-        Array(allWorkouts.prefix(5))
-    }
-    
     var body: some View {
         NavigationStack {
             VStack {
                 // Create Workout View
-                CreateWorkoutView()
+                CreateWorkoutButtons()
                     .navigationTitle("Log Workout")
                     .toolbarTitleDisplayMode(.inline)
                 
+                // Routines view
+                RoutinesView()
+                
                 // Show recent Workouts
-                List{
-                    Section("Recent workouts") {
-                        if recentWorkouts.isEmpty {
-                            VStack(spacing: 16) {
-                                Image(systemName: "text.badge.xmark")
-                                Text("No workouts found")
-                            }
-                            .fontWeight(.bold)
-                            .font(.caption)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                        }
-                        ForEach(recentWorkouts){ workout in
-                            Button(
-                                action: {
-                                    selectedWorkouts.append(workout)
-                                    selectedWorkoutDate = workout.date
-                                    showWorkoutSheet.toggle()
-                                }, label: {
-                                    CopyWorkoutItem(workout: workout, showCopyButton: false)
-                                }
-                            )
-                            .foregroundStyle(.primary)
-                        }
-                    }
-                }
-                .sheet(
-                    isPresented: $showWorkoutSheet,
-                    onDismiss: { selectedWorkouts = [] },
-                    content: {
-                        ViewWorkoutSheet(workouts: $selectedWorkouts, date: $selectedWorkoutDate)
-                })
+                RecentWorkoutList()
             }
         }
+    }
+}
+
+private struct RecentWorkoutList: View {
+    @Query(sort: \Workout.date, order: .reverse) private var allWorkouts: [Workout]
+    @State private var selectedWorkoutDate: Date = .now
+    @State private var showWorkoutSheet: Bool = false
+    @State private var selectedWorkouts: [Workout] = []
+    private var recentWorkouts: [Workout] {
+        Array(allWorkouts.prefix(5))
+    }
+    var body: some View {
+        List{
+            Section("Recent workouts") {
+                if recentWorkouts.isEmpty {
+                    VStack(spacing: 16) {
+                        Image(systemName: "text.badge.xmark")
+                        Text("No workouts found")
+                    }
+                    .fontWeight(.bold)
+                    .font(.caption)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                }
+                ForEach(recentWorkouts){ workout in
+                    Button(
+                        action: {
+                            selectedWorkouts.append(workout)
+                            selectedWorkoutDate = workout.date
+                            showWorkoutSheet.toggle()
+                        }, label: {
+                            CopyWorkoutItem(workout: workout, showCopyButton: false)
+                        }
+                    )
+                    .foregroundStyle(.primary)
+                }
+            }
+        }
+        .sheet(
+            isPresented: $showWorkoutSheet,
+            onDismiss: { selectedWorkouts = [] },
+            content: {
+                ViewWorkoutSheet(workouts: $selectedWorkouts, date: $selectedWorkoutDate)
+        })
     }
 }
 

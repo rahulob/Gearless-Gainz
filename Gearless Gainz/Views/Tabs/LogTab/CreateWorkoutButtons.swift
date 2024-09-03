@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CreateWorkoutView: View {
+struct CreateWorkoutButtons: View {
     @Environment(\.modelContext) private var modelContext
     @State private var showCopyWorkoutSheet: Bool = false
     @State private var showWorkoutSheet: Bool = false
@@ -60,5 +60,5 @@ struct CreateWorkoutView: View {
 
 
 #Preview {
-    CreateWorkoutView()
+    CreateWorkoutButtons()
 }

@@ -33,7 +33,7 @@ struct EditWorkoutView: View {
                 VStack {
                     // Name of the workout
                     TextField("Workout Name", text: $workoutName)
-                        .font(.title)
+                        .font(.title3)
                         .fontWeight(.bold)
                         .onChange(of: workoutName, {
                             workout.name = workoutName

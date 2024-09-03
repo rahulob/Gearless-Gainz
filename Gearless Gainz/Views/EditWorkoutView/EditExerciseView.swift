@@ -136,7 +136,7 @@ struct EditExerciseView: View {
                             errorMessage = "Exercise Name can't be empty"
                             showError = true
                         } else if allExercises.contains(where: {$0.name.lowercased() == exerciseName.lowercased() && $0.id != exercise.id}){
-                            errorMessage = "Exercise already exist"
+                            errorMessage = "Exercise with same name already exist"
                             showError = true
                         } else {
                             dismiss()
