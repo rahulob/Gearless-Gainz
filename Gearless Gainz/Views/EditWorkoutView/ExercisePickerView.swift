@@ -52,7 +52,7 @@ struct ExercisePickerView: View {
                 .padding(8)
                 .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.15)))
                 
-                // Create new exercise and add to workout buttons
+                // Create new exercise and filter buttons
                 HStack{
                     NavigationLink(destination: EditExerciseView(exercise: $newExercise, isNewExercise: true)){
                         Label("New", systemImage: "plus")
@@ -61,23 +61,30 @@ struct ExercisePickerView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     
-                    Button(action: {
-                        dismiss()
-                        withAnimation{
-                            let count = workout.entries.count
-                            for (index, exercise) in selectedExercises.enumerated() {
-                                let workoutEntry = WorkoutEntry(exercise: exercise, order: count+index, workout: workout)
-                                let firstSet = ExerciseSet(weight: 0, reps: 0, workoutEntry: workoutEntry, order: 0)
-                                modelContext.insert(firstSet)
-                            }
+                    Menu(content: {
+                        ForEach(TargetMuscle.allCases, id: \.self) { muscle in
+                            Button(action: {
+                                if filterMuscle == muscle{
+                                    filterMuscle = nil
+                                } else {
+                                    filterMuscle = muscle
+                                }
+                            }, label: {
+                                Text(muscle.displayName)
+                                if filterMuscle==muscle{
+                                    Image(systemName: "checkmark")
+                                }
+                            })
                         }
                     }, label: {
-                        Label("Add \(selectedExercises.count)", systemImage: "checkmark")
-                            .frame(maxWidth: .infinity)
-                            .padding(8)
+                        HStack{
+                            Text("\(filterMuscle?.displayName ?? "None")")
+                            Image(systemName: "line.3.horizontal.decrease.circle.fill")
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(8)
                     })
-                    .disabled(selectedExercises.isEmpty)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(BorderedProminentButtonStyle())
                 }
                 .font(.system(size: 18))
                 .fontWeight(.bold)
@@ -102,6 +109,25 @@ struct ExercisePickerView: View {
                         .listStyle(.plain)
                     }
                 }
+                .safeAreaInset(edge: .bottom, content: {
+                    if selectedExercises.count != 0 {
+                        Button(action: {
+                            dismiss()
+                            withAnimation{
+                                let count = workout.entries.count
+                                for (index, exercise) in selectedExercises.enumerated() {
+                                    let workoutEntry = WorkoutEntry(exercise: exercise, order: count+index, workout: workout)
+                                    let firstSet = ExerciseSet(weight: 0, reps: 0, workoutEntry: workoutEntry, order: 0)
+                                    modelContext.insert(firstSet)
+                                }
+                            }
+                        }, label: {
+                            Label("Add \(selectedExercises.count) exercises", systemImage: "checkmark")
+                                .padding(8)
+                        })
+                        .buttonStyle(.borderedProminent)
+                    }
+                })
                 // Overlay to show buttons when the exercise list is empty
                 .overlay(content: {
                     if exercises.isEmpty{
@@ -113,32 +139,6 @@ struct ExercisePickerView: View {
             //navigation title
             .navigationTitle("Select exercises")
             .toolbarTitleDisplayMode(.inline)
-            // Toolbar with buttons to create exercise and add them to workout
-            .toolbar{
-                ToolbarItem{
-                    Menu(content: {
-                        ForEach(TargetMuscle.allCases, id: \.self) { muscle in
-                            Button(action: {
-                                if filterMuscle == muscle{
-                                    filterMuscle = nil
-                                } else {
-                                    filterMuscle = muscle
-                                }
-                            }, label: {
-                                Text(muscle.displayName)
-                                if filterMuscle==muscle{
-                                    Image(systemName: "checkmark")
-                                }
-                            })
-                        }
-                    }, label: {
-                        HStack{
-                            Text("\(filterMuscle?.displayName ?? "None")")
-                            Image(systemName: "line.3.horizontal.decrease.circle.fill")
-                        }
-                    })
-                }
-            }
             .onChange(of: searchString, {
                 newExercise.name = searchString
             })

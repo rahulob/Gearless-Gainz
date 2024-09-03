@@ -49,18 +49,6 @@ struct EditWorkoutView: View {
                         .onAppear {
                             workoutDate = workout.date
                         }
-                    
-                    // Add exercise Button
-                    NavigationLink {
-                        ExercisePickerView(workout: workout)
-                    } label: {
-                        Label("Add Exercise", systemImage: "plus")
-                            .font(.system(size: 18))
-                            .fontWeight(.bold)
-                            .frame(maxWidth: .infinity)
-                            .padding(8)
-                    }
-                    .buttonStyle(.borderedProminent)
                 }
                 .padding(.horizontal)
                 
@@ -102,6 +90,16 @@ struct EditWorkoutView: View {
                         .listRowSeparator(.hidden)
                     }
                 }
+                .safeAreaInset(edge: .bottom, content: {
+                    // Add exercise Button
+                    NavigationLink {
+                        ExercisePickerView(workout: workout)
+                    } label: {
+                        Label("Add Exercise", systemImage: "plus")
+                            .padding(8)
+                    }
+                    .buttonStyle(.borderedProminent)
+                })
                 .environment(\.editMode, $isReorderState)
                 .listStyle(.plain)
                 .overlay {
@@ -112,13 +110,8 @@ struct EditWorkoutView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Menu {
-                        Button("Delete workout", systemImage: "trash", role: .destructive){
-                            deleteWorkoutAlert.toggle()
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis")
-                    }
+                    Button("Discard") { deleteWorkoutAlert.toggle() }
+                        .tint(.red)
                 }
                 
                 ToolbarItem {
