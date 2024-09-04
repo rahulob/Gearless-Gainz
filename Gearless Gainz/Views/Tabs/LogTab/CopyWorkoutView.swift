@@ -102,7 +102,7 @@ struct CopyWorkoutItem: View {
     }
     
     private func getCommaSeparatedValues() -> String {
-        let names = workout.entries.sorted(by: { $0.order < $1.order } ).map { $0.exercise.name }
+        let names = workout.entries.sorted(by: { $0.order < $1.order } ).map { $0.exercise?.name ?? "" }
         return names.joined(separator: ", ")
     }
     

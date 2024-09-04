@@ -16,7 +16,7 @@ struct ExerciseHistoryView: View {
     @Query(sort: \WorkoutEntry.order)
     private var sortedEntries: [WorkoutEntry]
     private var filteredEntries: [WorkoutEntry] {
-            sortedEntries.filter { $0.exercise == exercise }
+        exercise.entries
             .sorted(by: { $0.workout?.date ?? .now > $1.workout?.date ?? .now })
         }
     

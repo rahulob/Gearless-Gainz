@@ -34,9 +34,9 @@ final class WorkoutEntry: Identifiable {
     var sets: [ExerciseSet]
     var order: Int
     var workout: Workout?
-    var exercise: Exercise
+    var exercise: Exercise?
     
-    init(id: UUID = UUID(), exercise: Exercise, sets: [ExerciseSet]=[], order: Int, workout: Workout? = nil) {
+    init(id: UUID = UUID(), exercise: Exercise? = nil, sets: [ExerciseSet]=[], order: Int, workout: Workout? = nil) {
         self.id = id
         self.exercise = exercise
         self.sets = sets

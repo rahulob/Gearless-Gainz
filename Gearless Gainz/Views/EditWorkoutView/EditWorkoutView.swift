@@ -69,7 +69,7 @@ struct EditWorkoutView: View {
                     if isReorderState == .active {
                         Section("Press done after reordering") {
                             ForEach(filteredExercises){entry in
-                                ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
+                                ExerciseListItem(exercise: entry.exercise ?? Exercise(name: "Not found", targetMuscle: .other), showInfoButton: false)
                             }
                             .onDelete(perform: { indexSet in
                                 withAnimation {

@@ -111,11 +111,11 @@ func copyAndGetNewWorkout(_ workout: Workout, modelContext: ModelContext) -> Wor
     let newWorkout = Workout(date: .now)
     modelContext.insert(newWorkout)
     for entry in workout.entries {
-        let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order, workout: newWorkout)
+        let newEntry = WorkoutEntry(order: entry.order, workout: newWorkout)
         for exerciseSet in entry.sets {
             newEntry.sets.append(ExerciseSet(weight: exerciseSet.weight, reps: exerciseSet.reps, order: exerciseSet.order))
         }
-        newWorkout.entries.append(newEntry)
+        entry.exercise?.entries.append(newEntry)
     }
     if copyWorkoutTitle {
         newWorkout.name = workout.name

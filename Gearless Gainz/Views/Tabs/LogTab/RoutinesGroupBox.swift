@@ -37,7 +37,7 @@ struct RoutinesGroupBox: View {
 
 private struct RoutinesSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @Query private var routines: [Routine]
+    @Query(sort: \Routine.order) private var routines: [Routine]
     @State private var showCreateRoutineSheet = false
     
     var body: some View {

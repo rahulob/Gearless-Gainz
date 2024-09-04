@@ -113,9 +113,10 @@ struct ExercisePickerView: View {
                             withAnimation{
                                 let count = workout.entries.count
                                 for (index, exercise) in selectedExercises.enumerated() {
-                                    let workoutEntry = WorkoutEntry(exercise: exercise, order: count+index, workout: workout)
+                                    let workoutEntry = WorkoutEntry(order: count+index, workout: workout)
                                     let firstSet = ExerciseSet(weight: 0, reps: 0, workoutEntry: workoutEntry, order: 0)
-                                    modelContext.insert(firstSet)
+                                    workoutEntry.sets.append(firstSet)
+                                    exercise.entries.append(workoutEntry)
                                 }
                             }
                         }, label: {

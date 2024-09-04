@@ -19,7 +19,7 @@ struct EntryItem: View {
         VStack(spacing: 8) {
             // Name of the exercise or the workout date
             if showExerciseName {
-                ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
+                ExerciseListItem(exercise: entry.exercise ?? Exercise(name: "Not found", targetMuscle: .other), showInfoButton: false)
             } else {
                 Text(entry.workout?.date.formatted(date: .abbreviated, time: .omitted) ?? "Date Not Found")
                     .font(.title3)

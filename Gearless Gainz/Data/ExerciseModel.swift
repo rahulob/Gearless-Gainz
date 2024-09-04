@@ -17,6 +17,9 @@ final class Exercise: Identifiable{
     var youtubeURL: URL?
     @Attribute(.externalStorage) var photo: Data?
     
+    @Relationship(deleteRule: .cascade)
+    var entries = [WorkoutEntry]()
+    
     init(id: UUID = UUID(), name: String, targetMuscle: TargetMuscle, note: String = "", youtubeURL: URL? = nil) {
         self.id = id
         self.name = name

@@ -28,7 +28,7 @@ struct WorkoutEntryItem: View {
             VStack(spacing: 16) {
                 // Header of the exercise
                 HStack {
-                    ExerciseListItem(exercise: entry.exercise, showInfoButton: false)
+                    ExerciseListItem(exercise: entry.exercise ?? Exercise(name: "Not found", targetMuscle: .other), showInfoButton: false)
                     // Menu button
                     Menu("", systemImage: "ellipsis") {
                         // Reorder workout entry button
