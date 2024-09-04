@@ -52,15 +52,7 @@ private struct ViewWorkoutList: View {
                         showEditWorkoutSheet.toggle()
                     },
                     onCopyWorkout: {
-                        selectedWorkout = Workout(date: .now)
-                        for entry in workout.entries {
-                            let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order)
-                            for exerciseSet in entry.sets {
-                                newEntry.sets.append(ExerciseSet(weight: exerciseSet.weight, reps: exerciseSet.reps, order: exerciseSet.order))
-                            }
-                            selectedWorkout.entries.append(newEntry)
-                        }
-                        modelContext.insert(selectedWorkout)
+                        selectedWorkout = copyAndGetNewWorkout(workout, modelContext: modelContext)
                         showEditWorkoutSheet.toggle()
                     },
                     onDeleteWorkout: {

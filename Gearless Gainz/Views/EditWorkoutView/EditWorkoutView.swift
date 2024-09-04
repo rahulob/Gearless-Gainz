@@ -158,8 +158,10 @@ struct EditWorkoutView: View {
             .alert("Discard Workout", isPresented: $deleteWorkoutAlert) {
                 Button("Cancel", role: .cancel) { }
                 Button("Delete", role: .destructive) {
-                    modelContext.delete(workout)
                     dismiss()
+                    withAnimation {
+                        modelContext.delete(workout)
+                    }
                 }
             } message: {
                 Text("Entire Workout will be deleted \n You can't undo this action")

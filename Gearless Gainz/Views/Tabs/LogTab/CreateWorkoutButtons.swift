@@ -20,6 +20,7 @@ struct CreateWorkoutButtons: View {
                 Button(
                     action: {
                         newWorkout = Workout(date: .now)
+                        modelContext.insert(newWorkout)
                         showWorkoutSheet.toggle()
                     }) {
                         Label("Start Empty Workout", systemImage: "plus")

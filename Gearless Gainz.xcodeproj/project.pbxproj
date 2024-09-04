@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D50378542C6C964E00D83CCB /* DefaultExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50378532C6C964E00D83CCB /* DefaultExercises.swift */; };
-		D53BC5902C8744B700FD24CA /* RoutinesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53BC58F2C8744B700FD24CA /* RoutinesView.swift */; };
+		D53BC5902C8744B700FD24CA /* RoutinesGroupBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53BC58F2C8744B700FD24CA /* RoutinesGroupBox.swift */; };
 		D53BC5922C87766200FD24CA /* RoutinesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53BC5912C87766200FD24CA /* RoutinesModel.swift */; };
 		D53DF6B12C75DE400094AC2A /* ExerciseHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53DF6B02C75DE400094AC2A /* ExerciseHistoryView.swift */; };
 		D53FA5812C734293004D1170 /* SettingsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53FA5802C734293004D1170 /* SettingsTab.swift */; };
@@ -32,11 +32,12 @@
 		D5E6413B2C6B7D0D008397A4 /* ExercisePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E6413A2C6B7D0D008397A4 /* ExercisePickerView.swift */; };
 		D5E6413D2C6B7DCB008397A4 /* EditExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E6413C2C6B7DCB008397A4 /* EditExerciseView.swift */; };
 		D5ED1CF62C807FB500A5879F /* CalendarGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ED1CF52C807FB500A5879F /* CalendarGridView.swift */; };
+		D5FC99092C88CF550050F302 /* RoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FC99082C88CF550050F302 /* RoutineView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D50378532C6C964E00D83CCB /* DefaultExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExercises.swift; sourceTree = "<group>"; };
-		D53BC58F2C8744B700FD24CA /* RoutinesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutinesView.swift; sourceTree = "<group>"; };
+		D53BC58F2C8744B700FD24CA /* RoutinesGroupBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutinesGroupBox.swift; sourceTree = "<group>"; };
 		D53BC5912C87766200FD24CA /* RoutinesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutinesModel.swift; sourceTree = "<group>"; };
 		D53DF6B02C75DE400094AC2A /* ExerciseHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseHistoryView.swift; sourceTree = "<group>"; };
 		D53FA5802C734293004D1170 /* SettingsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTab.swift; sourceTree = "<group>"; };
@@ -61,6 +62,7 @@
 		D5E6413A2C6B7D0D008397A4 /* ExercisePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePickerView.swift; sourceTree = "<group>"; };
 		D5E6413C2C6B7DCB008397A4 /* EditExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExerciseView.swift; sourceTree = "<group>"; };
 		D5ED1CF52C807FB500A5879F /* CalendarGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarGridView.swift; sourceTree = "<group>"; };
+		D5FC99082C88CF550050F302 /* RoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,7 +104,7 @@
 				D5E641302C6B6B3D008397A4 /* LogTab.swift */,
 				D5483B412C7B823D00EBA2D0 /* CopyWorkoutView.swift */,
 				D55A606B2C7DE761009E94E2 /* CreateWorkoutButtons.swift */,
-				D53BC58F2C8744B700FD24CA /* RoutinesView.swift */,
+				D53BC58F2C8744B700FD24CA /* RoutinesGroupBox.swift */,
 			);
 			path = LogTab;
 			sourceTree = "<group>";
@@ -182,8 +184,17 @@
 				D5E641242C6B6AB0008397A4 /* MainView.swift */,
 				D5E641322C6B6B5F008397A4 /* Tabs */,
 				D54466682C6C7AFE00468800 /* EditWorkoutView */,
+				D5FC99072C88CF1B0050F302 /* RoutineView */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		D5FC99072C88CF1B0050F302 /* RoutineView */ = {
+			isa = PBXGroup;
+			children = (
+				D5FC99082C88CF550050F302 /* RoutineView.swift */,
+			);
+			path = RoutineView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,7 +273,7 @@
 				D53BC5922C87766200FD24CA /* RoutinesModel.swift in Sources */,
 				D55A60692C7DE690009E94E2 /* MonthPicker.swift in Sources */,
 				D5E641342C6B6C19008397A4 /* HistoryTab.swift in Sources */,
-				D53BC5902C8744B700FD24CA /* RoutinesView.swift in Sources */,
+				D53BC5902C8744B700FD24CA /* RoutinesGroupBox.swift in Sources */,
 				D5ED1CF62C807FB500A5879F /* CalendarGridView.swift in Sources */,
 				D55A606E2C7DE833009E94E2 /* ViewWorkoutSheet.swift in Sources */,
 				D5E641232C6B6AB0008397A4 /* MainApp.swift in Sources */,
@@ -277,6 +288,7 @@
 				D5A531182C71F5940071E647 /* ExerciseModel.swift in Sources */,
 				D5E641362C6B6CB3008397A4 /* EditWorkoutView.swift in Sources */,
 				D5E6413D2C6B7DCB008397A4 /* EditExerciseView.swift in Sources */,
+				D5FC99092C88CF550050F302 /* RoutineView.swift in Sources */,
 				D5E641392C6B6FA9008397A4 /* WorkoutModel.swift in Sources */,
 				D5A531142C71AD910071E647 /* ExerciseImage.swift in Sources */,
 			);
@@ -415,6 +427,7 @@
 				DEVELOPMENT_TEAM = 4F9VT296PZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Gearless Gainz";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -444,6 +457,7 @@
 				DEVELOPMENT_TEAM = 4F9VT296PZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Gearless Gainz";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

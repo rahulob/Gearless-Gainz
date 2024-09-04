@@ -18,7 +18,7 @@ struct LogTab: View {
                     .toolbarTitleDisplayMode(.inline)
                 
                 // Routines view
-                RoutinesView()
+                RoutinesGroupBox()
                 
                 // Show recent Workouts
                 RecentWorkoutList()
@@ -30,7 +30,6 @@ struct LogTab: View {
 private struct RecentWorkoutList: View {
     @Query(sort: \Workout.date, order: .reverse) private var allWorkouts: [Workout]
     @Environment(\.modelContext) private var modelContext
-    @AppStorage("copyWorkoutTitle") private var copyWorkoutTitle = true
     
     @State private var selectedWorkoutDate: Date = .now
     @State private var showWorkoutSheet: Bool = false
@@ -76,18 +75,7 @@ private struct RecentWorkoutList: View {
                     }
                     .swipeActions(edge: .leading) {
                         Button("Copy", systemImage: "doc.on.doc.fill") {
-                            newWorkout = Workout(date: .now)
-                            for entry in workout.entries {
-                                let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order)
-                                for exerciseSet in entry.sets {
-                                    newEntry.sets.append(ExerciseSet(weight: exerciseSet.weight, reps: exerciseSet.reps, order: exerciseSet.order))
-                                }
-                                newWorkout.entries.append(newEntry)
-                            }
-                            if copyWorkoutTitle {
-                                newWorkout.name = workout.name
-                            }
-                            modelContext.insert(newWorkout)
+                            newWorkout = copyAndGetNewWorkout(workout, modelContext: modelContext)
                             showCopiedWorkoutSheet.toggle()
                         }
                     }
@@ -115,6 +103,25 @@ private struct RecentWorkoutList: View {
             Text("Entire workout will be deleted")
         }
     }
+}
+
+func copyAndGetNewWorkout(_ workout: Workout, modelContext: ModelContext) -> Workout {
+    @AppStorage("copyWorkoutTitle") var copyWorkoutTitle = true
+    
+    let newWorkout = Workout(date: .now)
+    modelContext.insert(newWorkout)
+    for entry in workout.entries {
+        let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order, workout: newWorkout)
+        for exerciseSet in entry.sets {
+            newEntry.sets.append(ExerciseSet(weight: exerciseSet.weight, reps: exerciseSet.reps, order: exerciseSet.order))
+        }
+        newWorkout.entries.append(newEntry)
+    }
+    if copyWorkoutTitle {
+        newWorkout.name = workout.name
+    }
+    
+    return newWorkout
 }
 
 #Preview {

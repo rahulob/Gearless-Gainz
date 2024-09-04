@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct RoutinesView: View {
+struct RoutinesGroupBox: View {
     @State private var showRoutinesSheet = false
     var body: some View {
         GroupBox("Routines"){
@@ -57,11 +57,11 @@ private struct RoutinesSheet: View {
                 Button {
                     showCreateRoutineSheet.toggle()
                 } label: {
-                    Label("Add Routine", systemImage: "plus")
+                    Label("Create New Routine", systemImage: "plus")
                         .fontWeight(.bold)
                         .padding(8)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(BorderedButtonStyle())
             })
             .toolbar {
                 ToolbarItem(placement: .topBarLeading){
@@ -125,7 +125,10 @@ private struct CreateRoutineSheet: View {
                     } else if routines.contains(where: {$0.name.lowercased() == routineName.lowercased()}){
                         errorString = "Routine with same name already exists!"
                     } else {
-                        let routine = Routine(name: routineName, order: routines.count, note: routineNote)
+                        let routine = Routine(name: routineName, order: routines.count)
+                        if routineNote != "" {
+                            routine.note = routineNote
+                        }
                         modelContext.insert(routine)
                         dismiss()
                     }
@@ -152,21 +155,26 @@ private struct CreateRoutineSheet: View {
 private struct RoutineListItem: View {
     var routine: Routine
     var body: some View {
-        HStack(spacing: 16) {
-            Image(systemName: "folder.fill")
-            VStack(alignment: .leading) {
-                Text(routine.name)
-                    .fontWeight(.bold)
-                if routine.note != nil {
-                    Text(routine.note!)
+        NavigationLink {
+            RoutineView(routine: routine)
+        } label: {
+            HStack(spacing: 16) {
+                Image(systemName: "folder.fill")
+                    .font(.system(size: 24))
+                VStack(alignment: .leading) {
+                    Text(routine.name)
+                        .fontWeight(.bold)
+                    Text(routine.note ?? "No Description Found")
                         .lineLimit(3)
                         .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
 #Preview {
-    RoutinesView()
+    RoutinesGroupBox()
 }

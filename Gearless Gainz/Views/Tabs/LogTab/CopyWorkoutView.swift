@@ -78,18 +78,7 @@ struct CopyWorkoutItem: View {
                 if showCopyButton {
                     Button(
                         action: {
-                            newWorkout = Workout(date: .now)
-                            for entry in workout.entries {
-                                let newEntry = WorkoutEntry(exercise: entry.exercise, order: entry.order)
-                                for exerciseSet in entry.sets {
-                                    newEntry.sets.append(ExerciseSet(weight: exerciseSet.weight, reps: exerciseSet.reps, order: exerciseSet.order))
-                                }
-                                newWorkout.entries.append(newEntry)
-                            }
-                            if copyWorkoutTitle {
-                                newWorkout.name = workout.name
-                            }
-                            modelContext.insert(newWorkout)
+                            newWorkout = copyAndGetNewWorkout(workout, modelContext: modelContext)
                             showCopiedWorkoutSheet.toggle()
                         },
                         label: {

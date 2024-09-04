@@ -174,8 +174,6 @@ struct EditExerciseView: View {
 private struct EditExerciseViewWithPreview: View {
     @State private var sampleExercise2 = Exercise(name: "", targetMuscle: .chest)
     @State private var isNewExercise = true
-    
-//    @State private var path = NavigationPath()
 
     var body: some View {
         EditExerciseView(exercise: $sampleExercise2, isNewExercise: isNewExercise)
