@@ -18,13 +18,13 @@ struct ExerciseListItem: View {
             ExerciseImage(photoData: exercise.photo)
             VStack(alignment: .leading){
                 Text(exercise.name)
-                    .font(.title3)
                     .fontWeight(.bold)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
                 
                 Text(exercise.targetMuscle.displayName)
                     .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             Spacer()
             if showInfoButton{
@@ -34,7 +34,6 @@ struct ExerciseListItem: View {
             } else {
                 Button(action: { showHistorySheet.toggle() }){
                     Image(systemName: "calendar.badge.clock")
-                        .font(.title2)
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.trailing)

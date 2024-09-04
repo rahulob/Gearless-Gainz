@@ -44,7 +44,7 @@ private struct RoutinesSheet: View {
         NavigationStack {
             List {
                 ForEach(routines) {routine in
-                    Text(routine.name)
+                    RoutineListItem(routine: routine)
                 }
             }
             .overlay {
@@ -148,6 +148,25 @@ private struct CreateRoutineSheet: View {
         return false
     }
 }
+
+private struct RoutineListItem: View {
+    var routine: Routine
+    var body: some View {
+        HStack(spacing: 16) {
+            Image(systemName: "folder.fill")
+            VStack(alignment: .leading) {
+                Text(routine.name)
+                    .fontWeight(.bold)
+                if routine.note != nil {
+                    Text(routine.note!)
+                        .lineLimit(3)
+                        .font(.caption)
+                }
+            }
+        }
+    }
+}
+
 #Preview {
     RoutinesView()
 }

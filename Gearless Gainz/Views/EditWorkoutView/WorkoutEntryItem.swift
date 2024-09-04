@@ -69,15 +69,7 @@ struct WorkoutEntryItem: View {
                         }
                     }
                 )
-                .padding(.top, 4)
             }
-            .onDelete(perform: { indexSet in
-                withAnimation{
-                    for index in indexSet {
-                        modelContext.delete(sortedSets[index])
-                    }
-                }
-            })
             .onMove(perform: { indices, newOffset in
                 withAnimation{
                     var exerciseSets = sortedSets
@@ -147,7 +139,6 @@ private struct SetRow: View {
     
     @State private var weight: Double? = nil
     @State private var reps: Int? = nil
-//    @State private var setType: ExerciseSetType = .working
     
     var body: some View {
         HStack {
@@ -235,7 +226,6 @@ private struct SetRow: View {
                 }
             }
         }
-        .font(.title3)
         .fontWeight(.bold)
         .multilineTextAlignment(.center)
         .onChange(of: weight, {
@@ -253,10 +243,13 @@ private struct SetRow: View {
         .swipeActions(edge: .leading) {
             ForEach(ExerciseSetType.allCases, id: \.self) { setType in
                 if setType != exerciseSet.setType {
-                    Button(setType.displayName) { exerciseSet.setType = setType } 
-                        .tint(setType == .warmup ? .blue.opacity(0.5) : .accentColor.opacity(0.5))
+                    Button(setType.displayName, systemImage: setType.displayIcon) { exerciseSet.setType = setType }
                 }
             }
+        }
+        .swipeActions(edge: .trailing) {
+            Button("Delete", systemImage: "trash") { modelContext.delete(exerciseSet) }
+                .tint(.red)
         }
     }
 }

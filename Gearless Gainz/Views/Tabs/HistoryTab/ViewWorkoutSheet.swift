@@ -96,21 +96,24 @@ private struct ViewWorkoutItem: View {
                     .padding(.bottom)
             }
         } header: {
-            HStack{
-                VStack(alignment: .leading) {
-                    Text(workout.name ?? "").font(.title)
+            VStack {
+                Text(workout.name ?? "")
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                HStack{
                     Text(workout.date.formatted(date: .omitted, time: .shortened))
-                        .font(workout.name != nil ? .caption : .body)
+                        .font(.body)
+                    Spacer()
+                    Menu("", systemImage: "ellipsis") {
+                        Button("Edit", systemImage: "square.and.pencil", action: onEditWorkout )
+                        Button("Copy", systemImage: "doc.on.doc", action: onCopyWorkout )
+                        Button("Delete", systemImage: "trash", role: .destructive, action: { showDeleteAlert.toggle() })
+                    }
+                    .font(.system(size: 18))
                 }
-                Spacer()
-                Menu("", systemImage: "ellipsis") {
-                    Button("Edit", systemImage: "square.and.pencil", action: onEditWorkout )
-                    Button("Copy", systemImage: "doc.on.doc", action: onCopyWorkout )
-                    Button("Delete", systemImage: "trash", role: .destructive, action: { showDeleteAlert.toggle() })
-                }
-                .font(.system(size: 18))
             }
             .fontWeight(.bold)
+            .padding(.bottom, 8)
         }
         .alert("Entire workout will be deleted", isPresented: $showDeleteAlert) {
             Button("Cancel", role: .cancel) {}

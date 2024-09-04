@@ -55,7 +55,6 @@ struct EntryItem: View {
                         Text(String(format: "%.2f", exerciseSet.weight * (isWeightInKG ? 1 : 2.2)))
                         Text("\(exerciseSet.reps)")
                     }
-                    .font(.title3)
                     .frame(maxWidth: .infinity)
                 }
             }

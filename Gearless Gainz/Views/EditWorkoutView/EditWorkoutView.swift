@@ -31,16 +31,6 @@ struct EditWorkoutView: View {
             VStack {
                 // Workout Header
                 VStack {
-                    // Name of the workout
-                    TextField("Workout Name", text: $workoutName)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .onChange(of: workoutName, {
-                            workout.name = workoutName
-                        })
-                        .onAppear {
-                            workoutName = workout.name ?? ""
-                        }
                     // Date of the workout
                     DatePicker("Workout date", selection: $workoutDate)
                         .onChange(of: workoutDate, {
@@ -54,6 +44,27 @@ struct EditWorkoutView: View {
                 
                 // List of all the exercises in the workout
                 List {
+                    // Name of the workout
+                    GroupBox {
+                        TextField("e.g. Leg Day", text: $workoutName)
+                            .fontWeight(.bold)
+                            .onChange(of: workoutName, {
+                                if workoutName == "" {
+                                    workout.name = nil
+                                } else {
+                                    workout.name = workoutName
+                                }
+                            })
+                            .onAppear {
+                                workoutName = workout.name ?? ""
+                            }
+                    } label: {
+                        Text("Workout Name")
+                            .font(.caption)
+                            .foregroundStyle(Color.secondary)
+                    }
+                    .listRowSeparator(.hidden)
+                    
                     // In Reorder state
                     if isReorderState == .active {
                         Section("Press done after reordering") {
@@ -96,9 +107,11 @@ struct EditWorkoutView: View {
                         ExercisePickerView(workout: workout)
                     } label: {
                         Label("Add Exercise", systemImage: "plus")
+                            .fontWeight(.bold)
                             .padding(8)
                     }
                     .buttonStyle(.borderedProminent)
+                    .padding()
                 })
                 .environment(\.editMode, $isReorderState)
                 .listStyle(.plain)
@@ -112,6 +125,7 @@ struct EditWorkoutView: View {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Discard") { deleteWorkoutAlert.toggle() }
                         .tint(.red)
+                        .fontWeight(.bold)
                 }
                 
                 ToolbarItem {
@@ -126,24 +140,29 @@ struct EditWorkoutView: View {
                             }
                         }
                         .buttonStyle(BorderedProminentButtonStyle())
+                        .fontWeight(.bold)
                     }
                 }
             }
             .onAppear(perform: ensureExercisesHaveOrder)
             .onChange(of: filteredExercises, ensureExercisesHaveOrder)
-            .alert("Empty workout will be discarded", isPresented: $finishWorkoutAlert) {
-                Button("Continue workout", role: .cancel) { }
-                Button("Discard workout", role: .destructive) {
-                    modelContext.delete(workout)
-                    dismiss()
-                }
-            }
-            .alert("Entire workout will be deleted", isPresented: $deleteWorkoutAlert) {
+            .alert("Empty workout", isPresented: $finishWorkoutAlert) {
                 Button("Cancel", role: .cancel) { }
                 Button("Delete", role: .destructive) {
                     modelContext.delete(workout)
                     dismiss()
                 }
+            } message: {
+                Text("Workout will be deleted because it is empty")
+            }
+            .alert("Discard Workout", isPresented: $deleteWorkoutAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Delete", role: .destructive) {
+                    modelContext.delete(workout)
+                    dismiss()
+                }
+            } message: {
+                Text("Entire Workout will be deleted \n You can't undo this action")
             }
         }
     }

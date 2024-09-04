@@ -66,11 +66,13 @@ struct CopyWorkoutItem: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 VStack(alignment: .leading) {
-                    Text(workout.name ?? "")
+                    if workout.name != nil {
+                        Text(workout.name!)
+                    }
                     Text(getStringFromDate(date: workout.date))
-                        .font(.caption)
-                        .foregroundStyle(Color.secondary)
+                        .font(workout.name != nil ? .caption : .body)
                 }
+                .foregroundStyle(.secondary)
                 
                 Spacer()
                 if showCopyButton {

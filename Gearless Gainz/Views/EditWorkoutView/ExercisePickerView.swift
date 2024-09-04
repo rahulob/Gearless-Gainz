@@ -77,14 +77,11 @@ struct ExercisePickerView: View {
                             })
                         }
                     }, label: {
-                        HStack{
-                            Text("\(filterMuscle?.displayName ?? "None")")
-                            Image(systemName: "line.3.horizontal.decrease.circle.fill")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(8)
+                        Label("\(filterMuscle?.displayName ?? "None")", systemImage: "line.3.horizontal.decrease.circle.fill")
+                            .frame(maxWidth: .infinity)
+                            .padding(8)
                     })
-                    .buttonStyle(BorderedProminentButtonStyle())
+                    .buttonStyle(BorderedButtonStyle())
                 }
                 .font(.system(size: 18))
                 .fontWeight(.bold)
@@ -123,9 +120,11 @@ struct ExercisePickerView: View {
                             }
                         }, label: {
                             Label("Add \(selectedExercises.count) exercises", systemImage: "checkmark")
+                                .fontWeight(.bold)
                                 .padding(8)
                         })
                         .buttonStyle(.borderedProminent)
+                        .padding()
                     }
                 })
                 // Overlay to show buttons when the exercise list is empty
