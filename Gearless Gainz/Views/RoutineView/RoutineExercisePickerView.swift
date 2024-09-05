@@ -109,7 +109,9 @@ struct RoutineExercisePickerView: View {
                 .safeAreaInset(edge: .bottom, content: {
                     if selectedExercises.count != 0 {
                         Button(action: {
-                            selections = selectedExercises
+                            for exercise in selectedExercises {
+                                selections.append(exercise)
+                            }
                             dismiss()
                         }, label: {
                             Label("Add \(selectedExercises.count) exercises", systemImage: "checkmark")

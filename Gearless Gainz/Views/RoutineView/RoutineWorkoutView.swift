@@ -19,21 +19,21 @@ struct RoutineWorkoutView: View {
     
     var body: some View {
         NavigationStack {
+            if errorString != nil {
+                Text(errorString!)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
             List {
                 // Routine Workout name
                 GroupBox {
-                    VStack(alignment: .leading) {
-                        TextField("e.g. Push Day", text: $workoutName)
-                            .fontWeight(.bold)
-                            .onAppear {
+                    TextField("e.g. Push Day", text: $workoutName)
+                        .fontWeight(.bold)
+                        .onAppear {
+                            if workoutName == "" {
                                 workoutName = newRoutineWorkout.name
                             }
-                        if errorString != nil {
-                            Text(errorString!)
-                                .font(.caption)
-                                .foregroundStyle(.red)
                         }
-                    }
                 } label: {
                     Text("Workout Name")
                         .font(.caption)
@@ -76,13 +76,14 @@ struct RoutineWorkoutView: View {
                         // TODO: validate workout name and workout entries
                         if workoutName == "" {
                             errorString = "Workout Name can't be Empty!"
+                        } else if selectedExercises.count == 0 {
+                            errorString = "Workout Exercises can't be Empty!"
                         } else {
                             newRoutineWorkout.name = workoutName
                             newRoutineWorkout.routine = routine
                             for (index, exercise) in selectedExercises.enumerated() {
                                 newRoutineWorkout.entries.append(RoutineWorkoutEntry(exercise: exercise, sets: 1, order: index))
                             }
-                            routine.workouts.append(newRoutineWorkout)
                             dismiss()
                         }
                     }

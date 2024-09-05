@@ -14,6 +14,6 @@ struct MainApp: App {
         WindowGroup {
             MainView()
         }
-        .modelContainer(for: [Workout.self, Routine.self], inMemory: true)
+        .modelContainer(for: [Workout.self, Routine.self], inMemory: false)
     }
 }
