@@ -20,6 +20,9 @@ final class Exercise: Identifiable{
     @Relationship(deleteRule: .cascade)
     var entries = [WorkoutEntry]()
     
+    @Relationship(deleteRule: .cascade)
+    var routineEntries = [RoutineWorkoutEntry]()
+    
     init(id: UUID = UUID(), name: String, targetMuscle: TargetMuscle, note: String = "", youtubeURL: URL? = nil) {
         self.id = id
         self.name = name

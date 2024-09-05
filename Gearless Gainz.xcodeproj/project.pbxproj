@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		D50378542C6C964E00D83CCB /* DefaultExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50378532C6C964E00D83CCB /* DefaultExercises.swift */; };
+		D50474882C89F89900A59D81 /* RoutineWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50474872C89F89900A59D81 /* RoutineWorkoutView.swift */; };
+		D504748A2C89FB4300A59D81 /* RoutineExercisePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D50474892C89FB4300A59D81 /* RoutineExercisePickerView.swift */; };
 		D53BC5902C8744B700FD24CA /* RoutinesGroupBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53BC58F2C8744B700FD24CA /* RoutinesGroupBox.swift */; };
 		D53BC5922C87766200FD24CA /* RoutinesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53BC5912C87766200FD24CA /* RoutinesModel.swift */; };
 		D53DF6B12C75DE400094AC2A /* ExerciseHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53DF6B02C75DE400094AC2A /* ExerciseHistoryView.swift */; };
@@ -37,6 +39,8 @@
 
 /* Begin PBXFileReference section */
 		D50378532C6C964E00D83CCB /* DefaultExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultExercises.swift; sourceTree = "<group>"; };
+		D50474872C89F89900A59D81 /* RoutineWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineWorkoutView.swift; sourceTree = "<group>"; };
+		D50474892C89FB4300A59D81 /* RoutineExercisePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineExercisePickerView.swift; sourceTree = "<group>"; };
 		D53BC58F2C8744B700FD24CA /* RoutinesGroupBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutinesGroupBox.swift; sourceTree = "<group>"; };
 		D53BC5912C87766200FD24CA /* RoutinesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutinesModel.swift; sourceTree = "<group>"; };
 		D53DF6B02C75DE400094AC2A /* ExerciseHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseHistoryView.swift; sourceTree = "<group>"; };
@@ -193,6 +197,8 @@
 			isa = PBXGroup;
 			children = (
 				D5FC99082C88CF550050F302 /* RoutineView.swift */,
+				D50474872C89F89900A59D81 /* RoutineWorkoutView.swift */,
+				D50474892C89FB4300A59D81 /* RoutineExercisePickerView.swift */,
 			);
 			path = RoutineView;
 			sourceTree = "<group>";
@@ -271,6 +277,7 @@
 				D5483B422C7B823D00EBA2D0 /* CopyWorkoutView.swift in Sources */,
 				D55A606C2C7DE761009E94E2 /* CreateWorkoutButtons.swift in Sources */,
 				D53BC5922C87766200FD24CA /* RoutinesModel.swift in Sources */,
+				D50474882C89F89900A59D81 /* RoutineWorkoutView.swift in Sources */,
 				D55A60692C7DE690009E94E2 /* MonthPicker.swift in Sources */,
 				D5E641342C6B6C19008397A4 /* HistoryTab.swift in Sources */,
 				D53BC5902C8744B700FD24CA /* RoutinesGroupBox.swift in Sources */,
@@ -279,6 +286,7 @@
 				D5E641232C6B6AB0008397A4 /* MainApp.swift in Sources */,
 				D5D7DAC82C731E4A0059DD07 /* WorkoutEntryItem.swift in Sources */,
 				D50378542C6C964E00D83CCB /* DefaultExercises.swift in Sources */,
+				D504748A2C89FB4300A59D81 /* RoutineExercisePickerView.swift in Sources */,
 				D5A531162C71B0870071E647 /* ExerciseListItem.swift in Sources */,
 				D53FA5812C734293004D1170 /* SettingsTab.swift in Sources */,
 				D55A60702C7DE9E3009E94E2 /* EntryItem.swift in Sources */,

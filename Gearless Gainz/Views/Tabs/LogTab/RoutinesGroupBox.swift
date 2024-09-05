@@ -9,19 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct RoutinesGroupBox: View {
-    @State private var showRoutinesSheet = false
     var body: some View {
         GroupBox("Routines"){
             VStack{
-                Button(
-                    action: {
-                        showRoutinesSheet.toggle()
-                    }, label: {
-                        Label("Start From Routine", systemImage: "clock.arrow.2.circlepath")
-                            .frame(maxWidth: .infinity)
-                            .padding(8)
-                    }
-                )
+                NavigationLink {
+                    RoutinesSheet()
+                } label: {
+                    Label("Start From Routine", systemImage: "clock.arrow.2.circlepath")
+                        .frame(maxWidth: .infinity)
+                        .padding(8)
+                }
                 .buttonStyle(BorderedButtonStyle())
             }
             .fontWeight(.bold)
@@ -29,16 +26,12 @@ struct RoutinesGroupBox: View {
         .padding()
         .cornerRadius(3)
         .shadow(radius: 10)
-        .sheet(isPresented: $showRoutinesSheet, content: {
-            RoutinesSheet()
-        })
     }
 }
 
 private struct RoutinesSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Routine.order) private var routines: [Routine]
-    @State private var showCreateRoutineSheet = false
     
     var body: some View {
         NavigationStack {
@@ -54,27 +47,18 @@ private struct RoutinesSheet: View {
             }
             .safeAreaInset(edge: .bottom, content: {
                 // Create new Routine
-                Button {
-                    showCreateRoutineSheet.toggle()
+                NavigationLink {
+                    CreateRoutineSheet()
                 } label: {
                     Label("Create New Routine", systemImage: "plus")
                         .fontWeight(.bold)
                         .padding(8)
                 }
                 .buttonStyle(BorderedButtonStyle())
+                .padding()
             })
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading){
-                    Button("Dismiss", systemImage: "xmark.circle.fill"){
-                        dismiss()
-                    }
-                }
-            }
             .navigationTitle("Routines")
             .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showCreateRoutineSheet, content: {
-                CreateRoutineSheet()
-            })
         }
     }
 }
@@ -103,9 +87,9 @@ private struct CreateRoutineSheet: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Name") {
+                Section("Routine Name") {
                     VStack(alignment: .leading) {
-                        TextField("Enter Name", text: $routineName, axis: .vertical)
+                        TextField("e.g. Push Pull Leg", text: $routineName, axis: .vertical)
                             .font(.title3)
                             .fontWeight(.bold)
                         if errorString != "" {
@@ -136,13 +120,6 @@ private struct CreateRoutineSheet: View {
                 .frame(maxWidth: .infinity)
             }
             .navigationTitle("Create Routine")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading){
-                    Button("Dismiss", systemImage: "xmark.circle.fill"){
-                        dismiss()
-                    }
-                }
-            }
         }
     }
     
@@ -172,6 +149,7 @@ private struct RoutineListItem: View {
             }
         }
         .buttonStyle(PlainButtonStyle())
+        .padding(.vertical, 8)
     }
 }
 
