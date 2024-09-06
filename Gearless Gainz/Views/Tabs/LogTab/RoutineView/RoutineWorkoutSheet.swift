@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct RoutineWorkoutView: View {
+struct RoutineWorkoutSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     var routine: Routine
-    var newRoutineWorkout: RoutineWorkout
+    var newRoutineWorkout = RoutineWorkout(name: "")
     
     @State private var workoutName = ""
     @State private var errorString: String?
@@ -43,7 +43,7 @@ struct RoutineWorkoutView: View {
                 
                 // Routine Workout exercises
                 Section("Exercises") {
-                    ForEach(selectedExercises) {exercise in
+                    ForEach(selectedExercises, id: \.self) {exercise in
                         ExerciseListItem(exercise: exercise, showInfoButton: false)
                     }
                     .listRowSeparator(.hidden)

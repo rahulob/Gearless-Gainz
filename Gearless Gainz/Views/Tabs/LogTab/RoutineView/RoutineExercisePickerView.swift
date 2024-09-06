@@ -170,13 +170,3 @@ private struct EmptyListView: View {
         .padding(32)
     }
 }
-
-#Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Workout.self, configurations: config)
-
-    let w = Workout(date: .now)
-
-    return ExercisePickerView(workout: w)
-        .modelContainer(container)
-}

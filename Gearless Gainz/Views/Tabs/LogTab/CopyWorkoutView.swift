@@ -63,7 +63,7 @@ struct CopyWorkoutItem: View {
     @State private var newWorkout = Workout(date: .now)
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
                 VStack(alignment: .leading) {
                     if workout.name != nil {
@@ -90,6 +90,7 @@ struct CopyWorkoutItem: View {
             }
             Text(getCommaSeparatedValues())
                 .font(.caption)
+                .padding(.bottom, 8)
         }
         .fontWeight(.bold)
         .sheet(
