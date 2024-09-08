@@ -106,6 +106,7 @@ private struct ViewWorkoutItem: View {
             }
             .fontWeight(.bold)
             .padding(.bottom, 8)
+            .foregroundStyle(.primary)
         }
         .alert("Entire workout will be deleted", isPresented: $showDeleteAlert) {
             Button("Cancel", role: .cancel) {}

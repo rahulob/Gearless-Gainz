@@ -10,7 +10,7 @@ import SwiftData
 
 struct HistoryTab: View {
     @Query private var workouts: [Workout]
-    @State private var selectedDate: Date = Date()
+    @State private var selectedDate: Date = Date.now
     
     let boxSize: CGFloat = 40
     let calendar = Calendar.current
@@ -66,7 +66,7 @@ private struct DayLabels: View {
     let height: CGFloat
     var body: some View {
         HStack {
-            ForEach(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], id: \.self) { day in
+            ForEach(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], id: \.self) { day in
                 RoundedRectangle(cornerRadius: 4)
                     .fill(.gray.opacity(0.15))
                     .frame(height: height)

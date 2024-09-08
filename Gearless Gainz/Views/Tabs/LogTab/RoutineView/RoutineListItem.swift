@@ -33,6 +33,11 @@ struct RoutineListItem: View {
                         }
                         .tint(.red)
                     }
+                    .swipeActions(edge: .trailing) {
+                        Button("Edit", systemImage: "square.and.pencil") {
+                            
+                        }
+                    }
                     .alert("Are you sure", isPresented: $showDeleteAlert) {
                         Button("Cancel", role: .cancel) { }
                         Button("Delete", role: .destructive) {
