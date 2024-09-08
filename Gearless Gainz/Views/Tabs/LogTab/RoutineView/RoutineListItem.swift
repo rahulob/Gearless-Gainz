@@ -32,8 +32,6 @@ struct RoutineListItem: View {
                             showDeleteAlert.toggle()
                         }
                         .tint(.red)
-                    }
-                    .swipeActions(edge: .trailing) {
                         Button("Edit", systemImage: "square.and.pencil") {
                             
                         }

@@ -43,7 +43,7 @@ struct RoutineWorkoutSheet: View {
                 
                 // Routine Workout exercises
                 Section("Exercises") {
-                    ForEach(selectedExercises, id: \.self) {exercise in
+                    ForEach(Array(selectedExercises.enumerated()), id: \.offset) { index, exercise in
                         ExerciseListItem(exercise: exercise, showInfoButton: false)
                     }
                     .listRowSeparator(.hidden)
