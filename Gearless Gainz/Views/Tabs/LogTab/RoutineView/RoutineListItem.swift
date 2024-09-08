@@ -73,6 +73,7 @@ struct RoutineListItem: View {
                 }
             }
             .textCase(nil)
+            .foregroundStyle(.primary)
             .sheet(isPresented: $showEditRoutineSheet, content: {
                 CreateRoutineView(routine: routine)
             })
@@ -95,6 +96,7 @@ struct RoutineWorkoutItem: View {
     @AppStorage("copyWorkoutTitle") private var copyWorkoutTitle = true
     
     @State private var showCopiedWorkoutSheet = false
+    @State private var showWorkoutSheet = false
     @State private var newWorkout = Workout(date: .now)
     
     var routineWorkout: RoutineWorkout
@@ -107,8 +109,14 @@ struct RoutineWorkoutItem: View {
                 Spacer()
                 Button(
                     action: {
-                        dismiss()
-                        // TODO: create workout with exercises present in routine workout
+                        newWorkout = Workout(date: .now, name: routineWorkout.name)
+                        modelContext.insert(newWorkout)
+                        for routineEntry in routineWorkout.entries {
+                            let workoutEntry = WorkoutEntry(exercise: routineEntry.exercise, order: routineEntry.order)
+                            newWorkout.entries.append(workoutEntry)
+                            workoutEntry.sets.append(ExerciseSet(weight: 0, reps: 0, order: 0))
+                        }
+                        showWorkoutSheet.toggle()
                     },
                     label: {
                         Image(systemName: "doc.on.doc.fill")
@@ -121,6 +129,14 @@ struct RoutineWorkoutItem: View {
                 .padding(.bottom, 8)
         }
         .fontWeight(.bold)
+        .sheet(
+            isPresented: $showWorkoutSheet,
+            onDismiss: { dismiss() },
+            content: {
+                EditWorkoutView(workout: $newWorkout)
+                    .interactiveDismissDisabled(true)
+            }
+        )
     }
     func getCommaSeparatedValues() -> String {
         let names = routineWorkout.entries.sorted(by: { $0.order < $1.order } ).map { $0.exercise?.name ?? "" }
